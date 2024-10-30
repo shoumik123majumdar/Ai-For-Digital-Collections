@@ -13,6 +13,7 @@ class GeminiTranscriptionModel(TranscriptionModel):
         generation_config = genai.GenerationConfig(temperature=0)
         self.__model = genai.GenerativeModel("gemini-1.5-pro", generation_config=generation_config)
 
+
     def generate_transcription(self):
         """
         Generates transcription from image at self.file_path

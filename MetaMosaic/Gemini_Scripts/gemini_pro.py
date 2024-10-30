@@ -17,7 +17,17 @@ Outputs:
 """
 def process_image(file_path,tif_img):
     with PIL.Image.open(f"../{file_path}/{tif_img}") as img:
-        img.save(f"../{file_path}/Test.jpeg", 'JPEG', quality=50)
+        if img.mode == 'RGBA':
+            img = img.convert('RGB')
+        current_size = img.size
+        if current_size[0] < 3072 or current_size[1] < 3072:
+            new_size = current_size  # Keep the original size if it's smaller
+        else:
+            new_size = (3072, 3072)  # Resize to 3072x3072
+
+        # Resize the image
+        resized_img = img.resize(new_size, PIL.Image.ANTIALIAS)
+        resized_img.save(f"../{file_path}/Test.jpeg", 'JPEG', quality=100)
     file_path = f"../{file_path}/Test.jpeg"
     return genai.upload_file(file_path)
 
@@ -69,16 +79,16 @@ def compile_data(image_title,title,abstract,photographer_name="",dates=[""],tran
     return [image_title,title,abstract,photographer_name,primary_date,secondary_date,transcription]
 
 #Configure the Gemini Model API
-GOOG_KEY =   os.environ.get("GOOG_KEY")
+GOOG_KEY =   os.environ.get("GOOG_KEY") #Insert personal API Key here.
 genai.configure(api_key = GOOG_KEY)
 generation_config= genai.GenerationConfig(temperature=0)
 model = genai.GenerativeModel("gemini-1.5-pro",generation_config=generation_config)
 
 img_file_path = "Test_Images"
-image_front = "Test_11.jpg"
+image_front = "img.png"
 
 
-image_back = "Test_10Back.jpg"
+image_back = "img_1.png"
 
 #Process the back of the photo
 img = process_image(img_file_path,image_back)
@@ -90,9 +100,15 @@ with open("../transcription_prompt.txt", "r") as file:
 #Make request to transcribe the image
 response = model.generate_content(contents=[prompt,img])
 transcription = response.text
-
+print(transcription)
+"""
+First try and invert the steps within the same prompt/request
+IF DOESN"T WORK...
+Seperate transcription request to first simply transcribe the entire text,
+Then another request to seperate the information (ie: name, dates, raw_text)
+"""
 name, dates, raw_text = extract_details(transcription)
-time.sleep(4) #To mitigate concurrent request issues
+time.sleep(6) #To mitigate concurrent request issues
 #TODO : - Replace Commas within raw_text with something of Drew's choosing.
 
 
@@ -100,20 +116,20 @@ img = process_image(img_file_path,image_front)
 with open("../title_prompt.txt", "r") as file:
     prompt = file.read()
 
-title_prompt = prompt #+ raw_text
+title_prompt = prompt + raw_text
 
 #Make request to generate the title
 response = model.generate_content(contents=[title_prompt,img])
 title = response.text
 print(title)
-time.sleep(4)
+time.sleep(6)
 
 #Make request to generate the abstract
 with open("../abstract_prompt.txt", "r") as file:  # Load up the prompt from the abstract_prompt.txt file
     prompt = file.read()
 
 #Add raw context to the general prompt
-abstract_prompt = prompt #+ raw_text
+abstract_prompt = prompt + raw_text
 
 #Generate the abstract
 response = model.generate_content(contents=[abstract_prompt,img])
@@ -121,9 +137,8 @@ abstract = response.text
 print(abstract)
 
 #Add the generated title and abstract + photographer name, dates, and transcription to the csv file
-#with open("A|B_Test.csv", mode='a', newline='') as file:
-    #writer = csv.writer(file)
+with open("A|B_Test.csv", mode='a', newline='') as file:
+    writer = csv.writer(file)
     #title[7:] and abstract[10:] signify removing the Title portion of the "Title: 'actual title contents'"
-    #data = compile_data(image_front,title[7:],abstract[10:],name,dates,raw_text)
-    #writer.writerow(data)
-
+    data = compile_data(image_front,title[7:],abstract[10:],name,dates,raw_text)
+    writer.writerow(data)
