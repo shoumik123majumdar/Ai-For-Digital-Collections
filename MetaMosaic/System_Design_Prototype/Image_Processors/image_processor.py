@@ -22,13 +22,14 @@ class ImageProcessor(ABC):
         pass
 
     #Current thumbnail image size estimate: 391 × 500 pixels
-    #Current downloaded zip file image size:
+    #Current downloaded zip file image size: 4551 × 5873 pixels
     @abstractmethod
-    def resize(self):
+    def _resize(self):
         """
-        Helper Function to takes image file and resize it for optimal VLM processing
-        Scale up for maximum output effectiveness
+        Helper Function: takes image file and resize it for optimal VLM processing
+        Scale down to minimum required image size
         Ie: For Gemini model, scale to 3072x3072
+        Ie: For Claude, scale to 1000x1000
         Inputs:
             - None
         Outputs:
@@ -37,9 +38,9 @@ class ImageProcessor(ABC):
         pass
 
     @abstractmethod
-    def grayscale(self):
+    def _grayscale(self):
         """
-        Helper function that takes image file and converts it to grayscale
+        Helper function: takes image file and converts it to grayscale
         Inputs:
             - None
         Outputs:
