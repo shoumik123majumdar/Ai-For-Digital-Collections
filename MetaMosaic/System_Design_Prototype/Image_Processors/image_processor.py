@@ -33,7 +33,7 @@ class ImageProcessor(ABC):
         Inputs:
             - None
         Outputs:
-            - resized image file
+            - resized image file (JPEG)
         """
         pass
 

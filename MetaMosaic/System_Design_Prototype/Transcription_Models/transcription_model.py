@@ -8,7 +8,7 @@ class TranscriptionModel(ABC):
     def __init__(self, image_file):
         self.image_file = image_file
         self.token_data = None
-        with open("../../transcription_prompt.txt", "r") as file:
+        with open("../../../transcription_prompt.txt", "r") as file:
             self.prompt = file.read()
         #self.model <- model should be instantiated in constructor
 
@@ -21,7 +21,7 @@ class TranscriptionModel(ABC):
             - None
         Outputs:
             - self.transcription is initialized as a Transcription object
-            - self.tokens is initialized with the number of tokens used in the request
+            - self.token_data is initialized with the number of tokens used in the request
         """
         pass
 
@@ -32,7 +32,7 @@ class TranscriptionModel(ABC):
         Inputs:
             - None
         Outputs:
-            - Returns self.tokens
+            - Returns total number of tokens used
             OR
             - Returns message indicating no transcription requests have been made yet
         """

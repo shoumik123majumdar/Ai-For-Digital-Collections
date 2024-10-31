@@ -58,13 +58,13 @@ class GeminiTranscriptionModel(TranscriptionModel):
         else:
             return self.token_data["prompt_tokens"]
 
-    def get_completion_tokens(self):
+    def get_output_tokens(self):
         """
-        Gets the total number of tokens used from the latest transcription request
+        Gets the number of output tokens from the latest transcription request
         Inputs:
             - None
         Outputs:
-            - Returns the input tokens from self.token_data
+            - Returns the output tokens from self.token_data
             OR if self.token_data is None
             - Returns message indicating no transcription requests have been made yet
         """
