@@ -59,15 +59,6 @@ class GeminiTranscriptionModel(TranscriptionModel):
             return self.token_data["prompt_tokens"]
 
     def get_output_tokens(self):
-        """
-        Gets the number of output tokens from the latest transcription request
-        Inputs:
-            - None
-        Outputs:
-            - Returns the output tokens from self.token_data
-            OR if self.token_data is None
-            - Returns message indicating no transcription requests have been made yet
-        """
         if self.token_data is None:
             return "No Transcription Requests have been made"
         else:

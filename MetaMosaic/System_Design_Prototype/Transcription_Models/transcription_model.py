@@ -37,3 +37,29 @@ class TranscriptionModel(ABC):
             - Returns message indicating no transcription requests have been made yet
         """
         pass
+
+    @abstractmethod
+    def get_input_tokens(self):
+        """
+        Gets the number of input tokens from the latest transcription request
+        Inputs:
+            - None
+        Outputs:
+            - Returns the input tokens used in latest request
+            OR if self.token_data is None
+            - Returns message indicating no transcription requests have been made yet
+        """
+        pass
+
+    @abstractmethod
+    def get_output_tokens(self):
+        """
+        Gets the number of output tokens from the latest transcription request
+        Inputs:
+            - None
+        Outputs:
+            - Returns the output tokens used in latest request
+            OR if self.token_data is None
+            - Returns message indicating no transcription requests have been made yet
+        """
+        pass

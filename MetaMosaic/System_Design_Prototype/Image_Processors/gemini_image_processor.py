@@ -22,26 +22,12 @@ class GeminiImageProcessor(ImageProcessor):
                 - image file object
         """
         #self._grayscale() ONLY GRAYSCALE IF IMAGE IS A BACK_IMAGE
-        self._resize() # Resizes the image (saved in same location)
-
+        self._resize(3072,3072) # Resizes the image (saved in same location)
         return genai.upload_file(self.file_path)
 
     def _grayscale(self):
-        with Image.open(self.file_path) as img:
-            grayscale_img = img.convert("L")
-            grayscale_img.save(self.file_path)
+        super()
 
-    def _resize(self):
-        with Image.open(self.file_path) as img:
-            img = img.convert('RGB') #Makes sure it is possible to convert this image object into a JPEG later in the code
-
-            image_size = img.size
-            if image_size[0] < 3072 or image_size[1] < 3072:
-                image_size = image_size  # Keep the original size if it's smaller
-            else:
-                image_size = (3072, 3072)  # Resize to 3072x3072
-
-            #Resize the image
-            resized_img = img.resize(image_size, Image.LANCZOS)
-            resized_img.save(self.file_path,"JPEG")
+    def _resize(self,width,height):
+        super(width,height)
 

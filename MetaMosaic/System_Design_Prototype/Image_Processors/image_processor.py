@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+from PIL import Image
 
 class ImageProcessor(ABC):
     """
@@ -24,18 +24,30 @@ class ImageProcessor(ABC):
     #Current thumbnail image size estimate: 391 × 500 pixels
     #Current downloaded zip file image size: 4551 × 5873 pixels
     @abstractmethod
-    def _resize(self):
+    def _resize(self,width,height):
         """
-        Helper Function: takes image file and resize it for optimal VLM processing
-        Scale down to minimum required image size
+        Helper Function: takes image file and resize it to given width and height for optimal VLM processing
+        Scale down to minimum required image size (given width and height
         Ie: For Gemini model, scale to 3072x3072
         Ie: For Claude, scale to 1000x1000
         Inputs:
-            - None
+            - width: maximum image width for processing
+            - height: maximum image height for processing
         Outputs:
             - resized image file (JPEG)
         """
-        pass
+        with Image.open(self.file_path) as img:
+            img = img.convert("RGB")
+
+            img_size = img.size
+            if img_size[0] < width or img_size[1] < height:
+                img_size = img_size # keep original size if smaller
+            else:
+                img_size = (width, height) # resize to 1000X1000
+
+            # resize the image
+            resized_img = img.resize(img_size, Image.LANCZOS)
+            resized_img.save(self.file_path, "JPEG")
 
     @abstractmethod
     def _grayscale(self):
@@ -46,4 +58,6 @@ class ImageProcessor(ABC):
         Outputs:
             - grayscaled image file
         """
-        pass
+        with Image.open(self.filepath) as img:
+            greyscale_img = img.convert("L")
+            greyscale_img.save(self.file_path)
