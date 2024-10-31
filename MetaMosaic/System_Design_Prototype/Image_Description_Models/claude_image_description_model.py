@@ -21,22 +21,22 @@ class ClaudeImageDescriptionModel(ImageDescriptionModel):
         """
         content = self._prepare_content(self.title_generation_prompt, "title")
         response = self.client.messages.create(
-            model='',
+            model='claude-3-5-sonnet-20241022',
             messages=[{"role": "user", "content": content}]
         )
         self.title_token_data = response.usage
-        return response.messages[0].content
+        return response.content
 
     def generate_abstract(self):
         """
         """
         content = self._prepare_content(self.abstract_generation_prompt, "abstract")
         response = self.client.messages.create(
-            model = '',
+            model = 'claude-3-5-sonnet-20241022',
             messages=[{"role": "user", "content": content}]
         )
         self.abstract_token_data = response.usage
-        return response.messages[0].content
+        return response.content
 
     def _prepare_content(self, prompt, task):
         """
