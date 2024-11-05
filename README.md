@@ -1,4 +1,4 @@
-# AI for Digital Collections: Automated Metadata Generator for Digital Images
+# AI for Digital Collections: IMAGINE – Image Metadata Automated Generator for Information Notation and Extraction
 
 This is a research-focused repository aimed at processing undigitized images from the Digital Repository at Northeastern University. This project leverages multi-model models (Google Gemini, Claude Sonnet/Opus) and their computer vision (VLM) and large language model (LLM) capabilities to generate key metadata (ie: titles, abstracts, and subjects) for images, contributing to Northeastern's Digital Repository Archives.
 
