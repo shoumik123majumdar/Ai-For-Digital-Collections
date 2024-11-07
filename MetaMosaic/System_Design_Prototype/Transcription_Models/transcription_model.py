@@ -5,20 +5,19 @@ class TranscriptionModel(ABC):
     """
     Interface for classes that handle transcribing text from the back of the image
     """
-    def __init__(self, image_file):
-        self.image_file = image_file
+    def __init__(self,prompt_file):
         self.token_data = None
-        with open("../../../transcription_prompt.txt", "r") as file:
+        with open(prompt_file, "r") as file:
             self.prompt = file.read()
         #self.model <- model should be instantiated in constructor
 
 
     @abstractmethod
-    def generate_transcription(self):
+    def generate_transcription(self,image_file):
         """
         Generates transcription from image at self.file_path
         Inputs:
-            - None
+            - image_file: image object you want to generate transcription for
         Outputs:
             - self.transcription is initialized as a Transcription object
             - self.token_data is initialized with the number of tokens used in the request

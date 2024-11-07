@@ -8,6 +8,7 @@ class ImageProcessor(ABC):
     def __init__(self, file_path):
         self.file_path = file_path
 
+    #Think about image directories and where they are saved
     @abstractmethod
     def process_image(self):
         """

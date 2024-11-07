@@ -14,7 +14,7 @@ class Transcription():
         """
         Helper method that extracts the photographer name, dates and the raw transcription from self.transcription
         Inputs:
-            - self.transcription
+            - N/A
         Outputs:
             - name: photographer name
             - dates: date(s)
@@ -39,10 +39,10 @@ class Transcription():
         Outputs:
             - Returns the photographer name as a string
             OR
-            - Returns message: "No Photographer Name Found"
+            - Returns: "" (makes it easier for MetadataExporter class to compile metadata)
         """
         if self.name is None:
-            return "No Photographer Name Found"
+            return ""
         else:
             return self.name
 
@@ -54,10 +54,10 @@ class Transcription():
         Outputs:
             - Returns list of dates
             OR
-            - Returns message: "No Dates Found"
+            - Returns "" (makes it easier for MetadataExporter class to compile metadata)
         """
         if len(self.dates) == 0:
-            return "No Dates Found"
+            return ""
         else:
             return self.dates
 

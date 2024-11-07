@@ -30,4 +30,4 @@ class GeminiImageProcessor(ImageProcessor):
 
     def _resize(self,width,height):
         super(width,height)
-
+    #Look into resizing image too much

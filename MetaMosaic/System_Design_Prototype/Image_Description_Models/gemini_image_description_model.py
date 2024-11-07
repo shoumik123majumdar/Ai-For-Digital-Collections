@@ -6,8 +6,8 @@ class GeminiImageDescriptionModel(ImageDescriptionModel):
     """
     Generates Image Descriptions (Titles, Abstracts) using Gemini
     """
-    def __init__(self, image_file,context=None):
-        super().__init__(image_file)
+    def __init__(self, title_prompt_file,abstract_prompt_file):
+        super().__init__(title_prompt_file,abstract_prompt_file)
         goog_key = os.environ.get("GOOG_KEY")
         genai.configure(api_key=goog_key)
         generation_config = genai.GenerationConfig(temperature=0)
@@ -15,15 +15,15 @@ class GeminiImageDescriptionModel(ImageDescriptionModel):
         self.context = context
 
     #LOTS OF REUSED CODE, HOW TO REFACTOR?
-    def generate_title(self):
-        title_prompt = self.title_prompt + self.context
-        response = self.model.generate_content(contents=[title_prompt, self.image_file])
+    def generate_title(self,image_file,context):
+        title_prompt = self.title_prompt + context
+        response = self.model.generate_content(contents=[title_prompt, image_file])
         self.title_token_data = response.usage_metadata()
         return response.text
 
-    def generate_abstract(self):
-        abstract_prompt = self.abstract_prompt + self.context
-        response = self.model.generate_content(contents=[abstract_prompt, self.image_file])
+    def generate_abstract(self,image_file,context):
+        abstract_prompt = self.abstract_prompt + context
+        response = self.model.generate_content(contents=[abstract_prompt, image_file])
         self.abstract_token_data = response.usage_metadata()
         return response.text
 

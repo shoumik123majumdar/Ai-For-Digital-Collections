@@ -6,23 +6,22 @@ class ImageDescriptionModel(ABC):
     Interface for classes that generate image description informatino
     Ie: Titles, Abstracts, Subjects
     """
-    def __init__(self, image_file):
-        self.image_file = image_file
+    def __init__(self,title_prompt_file,abstract_prompt_file,context):
         self.title_token_data = None
         self.abstract_token_data = None
-        self.raw_context = ""
-        with open("../../title_prompt.txt", "r") as file:
+        with open(title_prompt_file, "r") as file:
             self.title_generation_prompt = file.read()
-        with open("../../abstract_prompt.txt", "r") as file:
+        with open(abstract_prompt_file, "r") as file:
             self.abstract_generation_prompt = file.read()
 
 
     @abstractmethod
-    def generate_title(self):
+    def generate_title(self,image_file,context=""):
         """
         Generates title for the given image object (self.image_file)
         Inputs:
-            - None
+            - image_file: image object you want to generate an title for
+            - context: additional context you want to add to generation request
         Outputs:
             - self.title - String representing the title of the image object
             - self.title_token_data is initialized with the number of tokens in this API request
@@ -30,11 +29,12 @@ class ImageDescriptionModel(ABC):
         pass
 
     @abstractmethod
-    def generate_abstract(self):
+    def generate_abstract(self,image_file,context=""):
         """
         Generates abstract for the given image object (self.image_file)
         Inputs:
-            - None
+            - image object you want to generate an abstract for
+            - context: additional context you want to add to generation request
         Outputs:
             - self.abstract - String representing the title of the image object
             - self.abstract_token_data is initialized with the number of tokens in this API request
