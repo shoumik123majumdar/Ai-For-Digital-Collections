@@ -6,7 +6,7 @@ class ImageDescriptionModel(ABC):
     Interface for classes that generate image description informatino
     Ie: Titles, Abstracts, Subjects
     """
-    def __init__(self,title_prompt_file,abstract_prompt_file,context):
+    def __init__(self,title_prompt_file,abstract_prompt_file):
         self.title_token_data = None
         self.abstract_token_data = None
         with open(title_prompt_file, "r") as file:

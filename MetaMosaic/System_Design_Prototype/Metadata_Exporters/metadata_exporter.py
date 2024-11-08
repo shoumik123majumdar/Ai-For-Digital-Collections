@@ -34,7 +34,7 @@ class MetadataExporter(ABC):
             "secondary_date": metadata.get_secondary_date(),
             "transcription": metadata.get_transcription(),
             "total_tokens": metadata.get_total_tokens(),
-            "total_input_tokens": metadata.get_total_input_tokens(),
+            "total_input_tokens": metadata.get_input_tokens(),
             "total_output_tokens": metadata.get_total_output_tokens()
         }
         return json.dumps(metadata_dict, indent=4)

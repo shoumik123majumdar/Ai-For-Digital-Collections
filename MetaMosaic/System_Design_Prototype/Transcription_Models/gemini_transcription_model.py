@@ -5,8 +5,8 @@ import os
 
 
 class GeminiTranscriptionModel(TranscriptionModel):
-    def __init__(self,prompt_file):
-        super().__init__(prompt_file)
+    def __init__(self, prompt_file_path):
+        super().__init__(prompt_file_path)
         goog_key = os.environ.get("GOOG_KEY")
         genai.configure(api_key=goog_key)
         generation_config = genai.GenerationConfig(temperature=0)
@@ -42,7 +42,7 @@ class GeminiTranscriptionModel(TranscriptionModel):
         else:
             return self.token_data["total_tokens"]
 
-    def get_total_input_tokens(self):
+    def get_input_tokens(self):
         """
         Gets the number of prompt/input tokens used from the latest transcription request
         Inputs:

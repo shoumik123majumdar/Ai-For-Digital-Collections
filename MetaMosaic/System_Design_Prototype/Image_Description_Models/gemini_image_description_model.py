@@ -1,6 +1,6 @@
 from image_description_model import ImageDescriptionModel
 import google.generativeai as genai
-
+import os
 
 class GeminiImageDescriptionModel(ImageDescriptionModel):
     """
@@ -12,7 +12,6 @@ class GeminiImageDescriptionModel(ImageDescriptionModel):
         genai.configure(api_key=goog_key)
         generation_config = genai.GenerationConfig(temperature=0)
         self.__model = genai.GenerativeModel("gemini-1.5-pro", generation_config=generation_config)
-        self.context = context
 
     #LOTS OF REUSED CODE, HOW TO REFACTOR?
     def generate_title(self,image_file,context):

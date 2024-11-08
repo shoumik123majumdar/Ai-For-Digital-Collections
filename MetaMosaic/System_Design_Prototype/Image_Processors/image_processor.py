@@ -5,18 +5,16 @@ class ImageProcessor(ABC):
     """
     Interface for classes that handle image pre-processing before feeding images into an AI model
     """
-    def __init__(self, file_path):
-        self.file_path = file_path
 
     #Think about image directories and where they are saved
     @abstractmethod
-    def process_image(self):
+    def process_image(self,file_path):
         """
             Takes file at self.file_path and stores it within new_location for use within the data pipeline
             Depending on the AI Model being used, necessary pre_processing for the image will be applied before image is stored
             Ie: encoded into base_64 for Anthropic models.
             Inputs:
-                - None
+                - file_path: path to the image file
             Outputs:
                 - None
         """
@@ -25,19 +23,20 @@ class ImageProcessor(ABC):
     #Current thumbnail image size estimate: 391 × 500 pixels
     #Current downloaded zip file image size: 4551 × 5873 pixels
     @abstractmethod
-    def _resize(self,width,height):
+    def _resize(self,file_path,width,height):
         """
         Helper Function: takes image file and resize it to given width and height for optimal VLM processing
         Scale down to minimum required image size (given width and height
         Ie: For Gemini model, scale to 3072x3072
         Ie: For Claude, scale to 1000x1000
         Inputs:
+            - file_path: path to the image file
             - width: maximum image width for processing
             - height: maximum image height for processing
         Outputs:
-            - resized image file (JPEG)
+            - resized image is saved in place @ file_path
         """
-        with Image.open(self.file_path) as img:
+        with Image.open(file_path) as img:
             img = img.convert("RGB")
 
             img_size = img.size
@@ -48,17 +47,17 @@ class ImageProcessor(ABC):
 
             # resize the image
             resized_img = img.resize(img_size, Image.LANCZOS)
-            resized_img.save(self.file_path, "JPEG")
+            resized_img.save(file_path, "JPEG")
 
     @abstractmethod
-    def _grayscale(self):
+    def _grayscale(self,file_path):
         """
         Helper function: takes image file and converts it to grayscale
         Inputs:
-            - None
+            - file_path: path to the image_file
         Outputs:
-            - grayscaled image file
+            - grayscaled image is saved in place @ file_path
         """
-        with Image.open(self.filepath) as img:
+        with Image.open(file_path) as img:
             greyscale_img = img.convert("L")
-            greyscale_img.save(self.file_path)
+            greyscale_img.save(file_path)
