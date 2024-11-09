@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import json
+import csv
 
 class MetadataExporter(ABC):
     """
@@ -18,12 +19,11 @@ class MetadataExporter(ABC):
             writer = csv.writer(csv_file)
             writer.writerow(metadata.get_metadata_as_list())
 
-    def jsonify_metadata(self,metadata,csv_file_path):
+    def jsonify_metadata(self,metadata):
         """
-        Takes metadata list object and returns it
-        :param metadata_dict: metadata to be written to csv_file
-        :param csv_file_path: csv file path to the csv that the metadata will be written into
-        :return: json: json object containing metadata information (not python dictionary)
+        Takes metadata object and returns it
+        :param metadata: metadata object to be converted into JSON
+        :return: json: JSON object containing metadata information (not python dictionary)
         """
         metadata_dict = {
             "image_title": metadata.get_image_title(),
@@ -38,4 +38,25 @@ class MetadataExporter(ABC):
             "total_output_tokens": metadata.get_total_output_tokens()
         }
         return json.dumps(metadata_dict, indent=4)
+
+    def jsonify_extended_metadata(self,extended_metadata):
+        """
+        Takes extended metadata object and returns it
+        :param extended_metadata: ExtendedMetadata object to be written to csv_file
+        :return: json: json object containing metadata information (not python dictionary)
+        """
+        metadata_dict = {
+            "image_title": extended_metadata.get_image_title(),
+            "title": extended_metadata.get_title(),
+            "abstract": extended_metadata.get_abstract(),
+            "photographer_name": extended_metadata.get_photographer_name(),
+            "primary_date": extended_metadata.get_primary_date(),
+            "secondary_date": extended_metadata.get_secondary_date(),
+            "transcription": extended_metadata.get_transcription(),
+            "total_tokens": extended_metadata.get_total_tokens(),
+            "total_input_tokens": extended_metadata.get_input_tokens(),
+            "total_output_tokens": extended_metadata.get_total_output_tokens()
+        }
+        return json.dumps(metadata_dict, indent=4)
+
 

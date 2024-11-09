@@ -40,7 +40,7 @@ class GeminiTranscriptionModel(TranscriptionModel):
         if self.token_data is None:
             return "No Transcription Requests have been made"
         else:
-            return self.token_data["total_tokens"]
+            return self.token_data.total_token_count
 
     def get_input_tokens(self):
         """
@@ -55,11 +55,11 @@ class GeminiTranscriptionModel(TranscriptionModel):
         if self.token_data is None:
             return "No Transcription Requests have been made"
         else:
-            return self.token_data["prompt_tokens"]
+            return self.token_data.prompt_token_count
 
     def get_output_tokens(self):
         if self.token_data is None:
             return "No Transcription Requests have been made"
         else:
-            return self.token_data["completion_tokens"]
+            return self.token_data.candidates_token_count
 

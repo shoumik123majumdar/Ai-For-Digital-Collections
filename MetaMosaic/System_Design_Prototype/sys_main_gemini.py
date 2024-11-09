@@ -3,35 +3,48 @@ from gemini_transcription_model import GeminiTranscriptionModel
 from gemini_image_description_model import GeminiImageDescriptionModel
 from metadata_exporter import MetadataExporter
 from metadata import Metadata
+from extended_metadata import ExtendedMetadata
 from transcription import Transcription
+import time
 
-def generate_metadata(image_front,transcription_model,image_description_model,metadata_exporter,image_back=""):
-    total_token_count = 0
-    total_input_token_count = 0
-    total_output_token_count = 0
-    context = ""
-    photographer_name = ""
-    dates = ""
+def generate_metadata_front_and_back(image_front,image_back,transcription_model,image_description_model,metadata_exporter,csv_file):
 
-    if image_back != "":
-        transcription = transcription_model.generate_transcription(image_back)
-        context = transcription.get_raw_transcription()
-        photographer_name = transcription.get_photographer_name()
-        dates = transcription.get_dates()
-        total_token_count += tanscription_model.get_total_tokens()
-        total_input_token_count += tanscription_model.get_total_input_tokens()
-        total_output_token_count += tanscription_model.get_total_output_tokens()
+    transcription = transcription_model.generate_transcription(image_back)
+    context = transcription.get_raw_transcription()
+    total_token_count = transcription_model.get_total_tokens()
+    total_input_token_count = transcription_model.get_input_tokens()
+    total_output_token_count = transcription_model.get_output_tokens()
 
+    print(total_token_count)
+    print(total_input_token_count)
+    print(total_output_token_count)
 
     title = image_description_model.generate_title(image_front,context)
+    time.sleep(60) #To bypass the 2 requests per minute limitation set for the free tier of the Gemini API
     abstract = image_description_model.generate_abstract(image_front,context)
-    total_token_count+=image_description_model.get_total_tokens()
-    total_input_token_count+=image_description_model.get_total_input_tokens()
-    total_output_token_count+=image_description_model.get_total_output_tokens()
 
-    #ASK CHAT HOW TO GET THE FILE NAME FROM image_front
-    metadata = Metadata(image_front,title,abstract,transcription,total_tokens,total_input_tokens,total_output_tokens)
-    metadata_exporter.write_to_csv(metadata)
+    total_token_count +=image_description_model.get_total_tokens()
+    total_input_token_count +=image_description_model.get_total_input_tokens()
+    total_output_token_count +=image_description_model.get_total_output_tokens()
+
+    print(total_token_count)
+    print(total_input_token_count)
+    print(total_output_token_count)
+
+    metadata = ExtendedMetadata(image_front.display_name,title,abstract,transcription,total_token_count,total_input_token_count,total_output_token_count)
+    metadata_exporter.write_to_csv(metadata,csv_file)
+
+def generate_metadata_single_image(image_front,image_description_model,metadata_exporter,csv_file):
+    title = image_description_model.generate_title(image_front, context)
+    abstract = image_description_model.generate_abstract(image_front, context)
+
+    total_token_count = image_description_model.get_total_tokens()
+    total_input_token_count = image_description_model.get_total_input_tokens()
+    total_output_token_count = image_description_model.get_total_output_tokens()
+
+    metadata = Metadata(image_front.display_name, title, abstract,total_token_count,
+                        total_input_token_count, total_output_token_count)
+    metadata_exporter.write_to_csv(metadata, csv_file)
 
 result_csv = "test_system.csv"
 image_front_path = "../Test_Images/large.tif"
@@ -47,13 +60,15 @@ transcription_prompt = "../transcription_prompt.txt"
 transcription_model = GeminiTranscriptionModel(transcription_prompt)
 
 #Initialize image description model
-title_prompt_file = "../Test_Images/title_prompt.txt"
-abstract_prompt_file = "../Test_Images/abstract_prompt.txt"
+title_prompt_file = "../title_prompt.txt"
+abstract_prompt_file = "../abstract_prompt.txt"
 image_description_model = GeminiImageDescriptionModel(title_prompt_file, abstract_prompt_file)
 
 #Initialize metadata exporter class
 metadata_exporter = MetadataExporter()
-generate_metadata(image_front,transcription_model,image_description_model,metadata_exporter,image_back)
+
+generate_metadata_front_and_back(image_front,image_back,transcription_model,image_description_model,metadata_exporter,result_csv)
 
 
 #HOW LONG DID THE RUN TAKE?
+#TODO: How do I run the code easily for
