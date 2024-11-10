@@ -8,7 +8,6 @@ from transcription import Transcription
 import time
 
 def generate_metadata_front_and_back(image_front,image_back,transcription_model,image_description_model,metadata_exporter,csv_file):
-
     transcription = transcription_model.generate_transcription(image_back)
     context = transcription.get_raw_transcription()
     total_token_count = transcription_model.get_total_tokens()
