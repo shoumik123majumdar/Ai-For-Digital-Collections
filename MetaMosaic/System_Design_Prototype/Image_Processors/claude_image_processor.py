@@ -11,7 +11,7 @@ class ClaudeImageProcessor(ImageProcessor):
     def __init__(self, file_path):
         super().__init__(file_path)
 
-    def process_image(self):
+    def process_image(self, file_path):
         """
             Processes given image at self.file_path and converts it to base_64 encoding for use with Anthropic's Claude API
             Inputs:
@@ -24,8 +24,8 @@ class ClaudeImageProcessor(ImageProcessor):
         with open(self.file_path, 'rb') as image_file:
             return base64.b64encode(image_file.read()).decode('utf-8')
 
-    def _greyscale_image(self):
-        super()
+    def _greyscale_image(self, file_path):
+        super()._grayscale(file_path)
 
-    def _resize_image(self,width,height):
-        super(width,height)
+    def _resize_image(self, file_path, width, height):
+        super()._resize(file_path, width, height)

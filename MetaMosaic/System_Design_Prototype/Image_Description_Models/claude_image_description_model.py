@@ -13,13 +13,12 @@ class ClaudeImageDescriptionModel(ImageDescriptionModel):
         api_key = os.environ.get("CLAUDE_API_KEY")
         self.client = anthropic.Anthropic(api_key=api_key)
         self.context = context
-        self.title_token_data = None
-        self.abstract_token_data = None
 
     def generate_title(self):
         """
         """
-        content = self._prepare_content(self.title_generation_prompt, "title")
+        title_prompt = self.title_generation_prompt + (self.context or "")
+        content = self._prepare_content(title_prompt, "title")
         response = self.client.messages.create(
             model='claude-3-5-sonnet-20241022',
             messages=[{"role": "user", "content": content}]
@@ -30,7 +29,8 @@ class ClaudeImageDescriptionModel(ImageDescriptionModel):
     def generate_abstract(self):
         """
         """
-        content = self._prepare_content(self.abstract_generation_prompt, "abstract")
+        abstract_prompt = self.abstract_generation_prompt + (self.context or "")
+        content = self._prepare_content(abstract_prompt, "abstract")
         response = self.client.messages.create(
             model = 'claude-3-5-sonnet-20241022',
             messages=[{"role": "user", "content": content}]
@@ -42,16 +42,18 @@ class ClaudeImageDescriptionModel(ImageDescriptionModel):
         """
         Helper function to prepare content for Claude API request
         """
-
         content = []
 
         # add front image content
-        content.append({"type": "text", "text": "Front Image:"})
-        content.append({"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": self.image_file}})
-
-        # add context if available
-        if self.context:
-            content.append({"type": "text", "text": f"Context from Back Image: {self.context}"})
+        content.append({"type": "text", "text": f"Front Image:"})
+        content.append({
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": "image/jpeg",
+                "data": self.image_file
+            }
+        })
 
         # add task specific prompt
         if task == "title":
