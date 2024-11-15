@@ -24,7 +24,6 @@ class GeminiTranscriptionModel(TranscriptionModel):
             - self.tokens is initialized with the number of tokens used in the request
         """
         response = self.__model.generate_content(contents=[self.prompt,image_file])
-        print(response)
         transcription = Transcription(response.text)
         self.token_data = response.usage_metadata
         return transcription
