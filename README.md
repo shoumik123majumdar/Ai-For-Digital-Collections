@@ -6,20 +6,14 @@ This project is currently in the research phase but is planned for future integr
 
 **[LINK TO LLM TESTING SPREADSHEET](https://docs.google.com/spreadsheets/d/1R5ee1EAB3jAFGcf7yF1zcKy2gPfhhpjEfJ12hB3jQ3M/edit?usp=sharing)**
 
+**[LINK TO PROJECT REPORT](https://docs.google.com/document/d/1D2Sl5qin717Rd5SLhbf8nJ0PCjrHwAxFPNjmyL1c4vk/edit?usp=sharing)**
+
 **[LINK TO SYSTEM DESIGN PROTOTYPE V1](System_Design_(ROUGHDRAFT).pdf)**
-
-## Gemini 
-[Gemini_Prototype_Report.md](Gemini_Prototype_Report.md)
-### Features
-
-- **Image Processing:** Converts `.tif` images to `.jpeg` format (complying with DRS image standards) with reduced quality to optimize for generative models.
-- **Automated Metadata Generation:** Generates transcriptions, titles, and abstracts for images using Google Gemini's advanced AI models.
-- **Detail Extraction:** Extracts key metadata such as photographer name, dates, and raw transcriptions from image text. This step will be soon integrated into a database that will allow another script to verify if images are under Northeastern's copyright jurisdiction. 
 
 ### How It Works
 
-1. **Image Conversion:** The script processes `.tif` images and converts them to `.jpeg` format, reducing quality for API processing optimization.
-2. **Transcription:** The back of the photo is processed to generate a raw transcription using Google Gemini's LLM.
+1. **Image Pre-Processing** The system pre-processes images and converts them to `.jpeg` format for VLM use, adjusting quality to optimize for API Image upload constraints. 
+2. **Transcription:** (IF Back-ImageCapable of transcribing text off of images for additional context
 3. **Detail Extraction:** Key metadata like photographer name, dates, and raw transcription is extracted from the generated text.
 4. **Title Generation:** The script generates a descriptive title for the image based on its content and extracted metadata.
 5. **Abstract Generation:** Finally, an abstract is generated to summarize the context and content of the image.
