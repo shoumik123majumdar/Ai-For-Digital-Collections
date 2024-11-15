@@ -1,4 +1,4 @@
-# AI for Digital Collections: Vision-Informed Semantic Tagging and Annotator (ViSTA)
+# Vision-Informed Semantic Tagging and Annotator (ViSTA)
 
 This is a research-focused repository aimed at processing undigitized images from the Digital Repository at Northeastern University. This project leverages multi-model models (Google Gemini, Claude Sonnet/Opus) and their computer vision and large language model (VLM) capabilities to generate key metadata (ie: titles, abstracts, and subjects) for images, contributing to Northeastern's Digital Repository Archives.
 
