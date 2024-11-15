@@ -9,15 +9,15 @@ class MetadataExporter(ABC):
     """
 
     def write_to_csv(self, metadata,csv_file_path):
-        """
-        Takes metadata object and appends contents to the csv file located @ csv_file_path
-        :param metadata: metadata object to be written to csv_file
-        :param csv_file_path: csv file path to the csv that the metadata will be appended into
-        :return: None: csv file will be altered in place
-        """
-        with open(csv_file_path, "a") as csv_file:
-            writer = csv.writer(csv_file)
-            writer.writerow(metadata.get_metadata_as_list())
+            """
+            Takes metadata object and appends contents to the csv file located @ csv_file_path
+            :param metadata: metadata object to be written to csv_file
+            :param csv_file_path: csv file path to the csv that the metadata will be appended into
+            :return: None: csv file will be altered in place
+            """
+            with open(csv_file_path, "a") as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow(metadata.get_metadata_as_list())
 
     def jsonify_metadata(self,metadata):
         """

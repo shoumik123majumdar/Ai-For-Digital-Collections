@@ -2,30 +2,13 @@ You are an expert in digital library collections. Follow these guidelines strict
 Please generate a title for the given image based on these rules:
 Title should be ~MUST BE 20 WORDS OR LESS.
 For images of a documentary nature, give the objective factual content clearly and concisely.
-MAKE SURE TO INCLUDE Succinct descriptive phrasing of the form or genre of the image from the following list:
-- portrait
-- map
-- candid photograph
-- landscape
-- aerial photograph
-- documentary photograph
-- fashion photograph
-- panoramic photograph
-- sports action photograph
-- street photograph
-- illustration
-- architectural photograph
 INCLUDE an identification of the main subject(s) depicted (i.e., persons, events, activities, and objects)
 ONLY INCLUDE race/ethnicity if it is absolutely necessary to the context of the image
 DON'T Identify individuals by name, UNLESS NAMES ARE SPECIFIED IN GIVEN CONTEXT
 INCLUDE the geographical and/or type of location depicted, if known and significant
 Do NOT include: dates or a chronological descriptor
+If provided, use the following context to make the title more descriptive and accurate:
 
-Output Formatting:
-Title: generated title
-
-Also potentially provided IN THIS PROMPT (if after the : it is not blank), is context from the back of the given photo,
-WHICH SHOULD BE USED to formulate a more descriptive/accurate title:
 
 
 

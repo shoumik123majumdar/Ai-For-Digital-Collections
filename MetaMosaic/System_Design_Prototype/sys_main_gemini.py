@@ -35,7 +35,7 @@ def generate_metadata_front_and_back(image_front,image_back,transcription_model,
 
 def generate_metadata_single_image(image_front,image_description_model,metadata_exporter,csv_file):
     title = image_description_model.generate_title(image_front,"")
-    time.sleep(60)
+    time.sleep(60) #To ensure no 429 resource errors occur from too many requests at once
     abstract = image_description_model.generate_abstract(image_front,"")
 
     total_token_count = image_description_model.get_total_tokens()
@@ -48,12 +48,12 @@ def generate_metadata_single_image(image_front,image_description_model,metadata_
 
 result_double_csv = "CSV_files/double_image_results.csv"
 result_single_csv = "CSV_files/single_image_results.csv"
-image_front_path = "../Test_Images/report_test.jpg"
-image_back_path = "../Test_Images/system_test_back.tif"
+image_front_path = "../Test_Images/portrait.tif"
+image_back_path = "../Test_Images/portrait_back.tif"
 
 #Image preprocessing step
 image_processor_model = GeminiImageProcessor()
-#image_back = image_processor_model.process_image(image_back_path)
+image_back = image_processor_model.process_image(image_back_path)
 image_front = image_processor_model.process_image(image_front_path)
 
 #Initialize transcription model
@@ -70,8 +70,8 @@ image_description_model = GeminiImageDescriptionModel(title_prompt_file, abstrac
 #Initialize metadata exporter class
 metadata_exporter = MetadataExporter()
 
-#generate_metadata_front_and_back(image_front,image_back,transcription_model,image_description_model,metadata_exporter,result_double_csv)
-generate_metadata_single_image(image_front,image_description_model,metadata_exporter,result_single_csv)
+generate_metadata_front_and_back(image_front,image_back,transcription_model,image_description_model,metadata_exporter,result_double_csv)
+#generate_metadata_single_image(image_front,image_description_model,metadata_exporter,result_single_csv)
 
 #HOW LONG DID THE RUN TAKE?
 #TODO: How do I run the code easily for

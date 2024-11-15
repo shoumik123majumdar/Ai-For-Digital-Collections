@@ -14,9 +14,9 @@ class Metadata:
         total_output_tokens (int): Total number of output tokens used to generate metadata.
     """
     def __init__(self, image_title, title, abstract, total_tokens, total_input_tokens, total_output_tokens):
-        self._image_title = image_title
-        self._title = title
-        self._abstract = abstract
+        self._image_title = image_title.strip()
+        self._title = title.strip()
+        self._abstract = abstract.strip()
         self._total_tokens = total_tokens
         self._total_input_tokens = total_input_tokens
         self._total_output_tokens = total_output_tokens
