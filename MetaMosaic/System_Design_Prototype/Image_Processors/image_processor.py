@@ -35,6 +35,7 @@ class ImageProcessor(ABC):
             - height: maximum image height for processing
         Outputs:
             - resized image is saved in place @ file_path
+            - any image that is resized will be converted into a JPEG file
         """
         with Image.open(file_path) as img:
             img = img.convert("RGB")

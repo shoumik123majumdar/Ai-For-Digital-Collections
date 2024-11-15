@@ -43,7 +43,7 @@ class GeminiTranscriptionModel(TranscriptionModel):
         else:
             return self.token_data["total_tokens"]
 
-    def get_total_input_tokens(self):
+    def get_input_tokens(self):
         """
         Gets the number of prompt/input tokens used from the latest transcription request
         Inputs:

@@ -16,4 +16,3 @@ Format the output like this text:
 Name:Name of Photographer
 Date:[Date1, Date2,...] (formatted as a list from earliest to latest date)
 Raw:(Full raw transcription given the transcription rules above)
-
