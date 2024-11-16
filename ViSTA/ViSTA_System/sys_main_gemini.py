@@ -7,6 +7,19 @@ from extended_metadata import ExtendedMetadata
 from transcription import Transcription
 import time
 
+def generate_metadata_single_image(image_front,image_description_model,metadata_exporter,csv_file):
+    title = image_description_model.generate_title(image_front,"")
+    time.sleep(60) #To ensure no 429 resource errors occur from too many requests at once
+    abstract = image_description_model.generate_abstract(image_front,"")
+
+    total_token_count = image_description_model.get_total_tokens()
+    total_input_token_count = image_description_model.get_total_input_tokens()
+    total_output_token_count = image_description_model.get_total_output_tokens()
+
+    metadata = Metadata(image_front.display_name, title, abstract,total_token_count,
+                        total_input_token_count, total_output_token_count)
+    metadata_exporter.write_to_csv(metadata, csv_file)
+
 def generate_metadata_front_and_back(image_front,image_back,transcription_model,image_description_model,metadata_exporter,csv_file):
     transcription = transcription_model.generate_transcription(image_back)
     context = transcription.get_raw_transcription()
@@ -32,19 +45,6 @@ def generate_metadata_front_and_back(image_front,image_back,transcription_model,
 
     metadata = ExtendedMetadata(image_front.display_name,title,abstract,transcription,total_token_count,total_input_token_count,total_output_token_count)
     metadata_exporter.write_to_csv(metadata,csv_file)
-
-def generate_metadata_single_image(image_front,image_description_model,metadata_exporter,csv_file):
-    title = image_description_model.generate_title(image_front,"")
-    time.sleep(60) #To ensure no 429 resource errors occur from too many requests at once
-    abstract = image_description_model.generate_abstract(image_front,"")
-
-    total_token_count = image_description_model.get_total_tokens()
-    total_input_token_count = image_description_model.get_total_input_tokens()
-    total_output_token_count = image_description_model.get_total_output_tokens()
-
-    metadata = Metadata(image_front.display_name, title, abstract,total_token_count,
-                        total_input_token_count, total_output_token_count)
-    metadata_exporter.write_to_csv(metadata, csv_file)
 
 result_double_csv = "CSV_files/double_image_results.csv"
 result_single_csv = "CSV_files/single_image_results.csv"
