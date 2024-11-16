@@ -17,4 +17,3 @@ The results from all of the research done to implement this system is linked bel
 2. **Transcription:** Some collections within the DRS (ie: Boston Globe) contain an additional side to each of the digitally stored photographs that possesses additional textual context about the photograph itself. ViSTA is capable of transcribing text off of the additional image to extract valuable context to support further metadata generation.
 3. **Title and Abstract Generation:** The script generates descriptive titles and abstracts for the image based on its content as well as additional context.
 4. **Tagging** The metadata generated is tagged to each image and exported into a given csv file, or can be exported into JSON format. 
-
