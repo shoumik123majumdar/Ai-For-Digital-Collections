@@ -25,28 +25,23 @@ class GeminiImageDescriptionModel(ImageDescriptionModel):
 
     def generate_title(self, image_file, context=""):
         title_prompt = self.title_generation_prompt + context
-        self.title_token_data = self._generate_content(title_prompt, image_file)[1]
-        return self._generate_content(title_prompt, image_file)[0]
+        response = self._generate_content(title_prompt, image_file)
+        self.total_tokens += response[1].total_token_count
+        self.input_tokens += response[1].prompt_token_count
+        self.output_tokens += response[1].candidates_token_count
+        return response[0]
 
     def generate_abstract(self, image_file, context=""):
         abstract_prompt = self.abstract_generation_prompt + context
-        self.abstract_token_data = self._generate_content(abstract_prompt, image_file)[1]
-        return self._generate_content(abstract_prompt, image_file)[0]
-
-    def get_total_tokens(self):
-        if self.abstract_token_data is None or self.title_token_data is None:
-            return "abstract or title has not been generated yet, therefore no total token count can be returned"
-        else:
-            return self.title_token_data.total_token_count + self.abstract_token_data.total_token_count
+        response = self._generate_content(abstract_prompt, image_file)
+        self.total_tokens += response[1].total_token_count
+        self.input_tokens += response[1].prompt_token_count
+        self.output_tokens += response[1].candidates_token_count
+        return response[0]
 
     def get_total_input_tokens(self):
-        if self.abstract_token_data is None or self.title_token_data is None:
-            return "abstract or title has not been generated yet, therefore no total token count can be returned"
-        else:
-            return self.title_token_data.prompt_token_count + self.abstract_token_data.prompt_token_count
+            return self.input_tokens
 
     def get_total_output_tokens(self):
-        if self.abstract_token_data is None or self.title_token_data is None:
-            return "abstract or title has not been generated yet, therefore no total token count can be returned"
-        else:
-            return self.title_token_data.candidates_token_count + self.abstract_token_data.candidates_token_count
+            return self.output_tokens
+

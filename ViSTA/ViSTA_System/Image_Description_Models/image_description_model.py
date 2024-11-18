@@ -7,7 +7,9 @@ class ImageDescriptionModel(ABC):
     Ie: Titles, Abstracts, Subjects
     """
     def __init__(self,title_prompt_file,abstract_prompt_file):
-        self.title_token_data = None
+        self.total_tokens = 0
+        self.input_tokens = 0
+        self.output_tokens = 0
         self.abstract_token_data = None
         with open(title_prompt_file, "r") as file:
             self.title_generation_prompt = file.read()
@@ -54,5 +56,12 @@ class ImageDescriptionModel(ABC):
             OR
             - Returns message indicating that no title requests have been made yet
         """
-        pass
+        return self.total_tokens
 
+    def reset_token_counts(self):
+        """
+        Resets token counts to zero.
+        """
+        self.total_tokens = 0
+        self.input_tokens = 0
+        self.output_tokens = 0

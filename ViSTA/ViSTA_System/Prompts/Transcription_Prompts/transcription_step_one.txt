@@ -1,0 +1,8 @@
+Transcribe what's on this photo
+
+Transcription rules
+In general, use modern spacing conventions when transcribing from the source. Make no attempt to preserve additional or irregular spacing between words. If spacing between words in the source is ambiguous, or lacking, include spaces in the transcription to separate the words as needed.
+Indicate missing letters in words with a “-“
+Indicate single or multi-word omissions in the transcription by using “…”. When using the mark of omission, generally use it with a space on either side
+Transcribe initials, initialisms, monograms, and acronyms without internal spaces (acronyms without periods), regardless of how they are presented in the source of information.
+Transcribe an unintentional inaccuracy, misspelling, or misprint as it appears on the material. Follow such an inaccuracy either by “[sic]” or by the abbreviation “i.e.” and the correction within square brackets.
