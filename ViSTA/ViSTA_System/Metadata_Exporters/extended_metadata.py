@@ -1,3 +1,5 @@
+from httplib2.auth import token
+
 from metadata import Metadata
 
 class ExtendedMetadata(Metadata):
@@ -9,13 +11,11 @@ class ExtendedMetadata(Metadata):
         image_title (str): Title of the actual image file.
         title (str): Title that was generated for the image.
         abstract (str): Abstract that was generated for the image.
-        transcription (str): Transcription object that was generated for the image.
-        total_tokens (int): Total number of tokens used to generate metadata.
-        total_input_tokens (int): Total number of input tokens used to generate metadata.
-        total_output_tokens (int): Total number of output tokens used to generate metadata.
+        transcription: Transcription object that was generated for the image.
+        token_tracker = TokenTracker object that was used to track the token usage when generating the metadata
     """
-    def __init__(self, image_title, title, abstract, transcription, total_tokens, total_input_tokens, total_output_tokens):
-        super().__init__(image_title,title,abstract,total_tokens,total_input_tokens,total_output_tokens)
+    def __init__(self, image_title, title, abstract, transcription,token_tracker):
+        super().__init__(image_title,title,abstract,token_tracker)
         self._transcription = transcription
 
     def get_transcription(self):

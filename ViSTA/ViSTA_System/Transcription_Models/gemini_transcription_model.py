@@ -6,8 +6,8 @@ import os
 
 class GeminiTranscriptionModel(TranscriptionModel):
 
-    def __init__(self,prompt_file):
-        super().__init__(prompt_file)
+    def __init__(self,prompt_file,token_tracker):
+        super().__init__(prompt_file,token_tracker)
         goog_key = os.environ.get("GOOG_KEY")
         genai.configure(api_key=goog_key)
         generation_config = genai.GenerationConfig(temperature=0)

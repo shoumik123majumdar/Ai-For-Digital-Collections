@@ -9,17 +9,15 @@ class Metadata:
         image_title (str): Title of the actual image file.
         title (str): Title that was generated for the image.
         abstract (str): Abstract that was generated for the image.
-        total_tokens (int): Total number of tokens used to generate metadata.
-        total_input_tokens (int): Total number of input tokens used to generate metadata.
-        total_output_tokens (int): Total number of output tokens used to generate metadata.
+        token_tracker = TokenTracker object that was used to track the token usage when generating the metadata
     """
-    def __init__(self, image_title, title, abstract, total_tokens, total_input_tokens, total_output_tokens):
+    def __init__(self, image_title, title, abstract,token_tracker):
         self._image_title = image_title.strip()
         self._title = title.strip()
         self._abstract = abstract.strip()
-        self._total_tokens = total_tokens
-        self._total_input_tokens = total_input_tokens
-        self._total_output_tokens = total_output_tokens
+        self._total_tokens = token_tracker.total_tokens
+        self._total_input_tokens = token_tracker.input_tokens
+        self._total_output_tokens = token_tracker.output_tokens
 
     def get_image_title(self):
         """

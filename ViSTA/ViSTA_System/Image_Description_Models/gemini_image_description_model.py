@@ -6,8 +6,8 @@ class GeminiImageDescriptionModel(ImageDescriptionModel):
     """
     Generates Image Descriptions (Titles, Abstracts) using Gemini
     """
-    def __init__(self, title_prompt_file,abstract_prompt_file):
-        super().__init__(title_prompt_file,abstract_prompt_file)
+    def __init__(self, title_prompt_file,abstract_prompt_file,token_tracker):
+        super().__init__(title_prompt_file,abstract_prompt_file,token_tracker)
         goog_key = os.environ.get("GOOG_KEY")
         genai.configure(api_key=goog_key)
         generation_config = genai.GenerationConfig(temperature=0)
