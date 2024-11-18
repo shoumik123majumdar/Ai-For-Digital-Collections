@@ -26,22 +26,13 @@ class GeminiImageDescriptionModel(ImageDescriptionModel):
     def generate_title(self, image_file, context=""):
         title_prompt = self.title_generation_prompt + context
         response = self._generate_content(title_prompt, image_file)
-        self.total_tokens += response[1].total_token_count
-        self.input_tokens += response[1].prompt_token_count
-        self.output_tokens += response[1].candidates_token_count
+        self.token_tracker.update_token_tracker(response[1])
         return response[0]
 
     def generate_abstract(self, image_file, context=""):
         abstract_prompt = self.abstract_generation_prompt + context
         response = self._generate_content(abstract_prompt, image_file)
-        self.total_tokens += response[1].total_token_count
-        self.input_tokens += response[1].prompt_token_count
-        self.output_tokens += response[1].candidates_token_count
+        self.token_tracker.update_token_tracker(response[1])
         return response[0]
 
-    def get_total_input_tokens(self):
-            return self.input_tokens
-
-    def get_total_output_tokens(self):
-            return self.output_tokens
 
