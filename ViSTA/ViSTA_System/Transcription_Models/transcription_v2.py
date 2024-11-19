@@ -6,34 +6,34 @@ class Transcription():
     Class for storing transcription information
     ie: photographer name, dates, and raw transcription.
     """
-    def __init__(self,transcription):
-        self.transcription = transcription
-        self.name,self.dates,self.raw = self._extract_details()
+    def __init__(self,raw_transcription,detail_extraction):
+        self.transcription = raw_transcription
+        self.detail_extraction = detail_extraction
+        self.name, self.dates = self._extract_details()
+
 
     def _extract_details(self):
         """
-        Helper method that extracts the photographer name, dates and the raw transcription from self.transcription
-        Inputs:
-            - N/A
-        Outputs:
-            - name: photographer name
-            - dates: date(s)
-            - raw_text: raw transcription
+        Helper method to extract photographer name and date from the detail_extraction field
+        :return: photographer name as a string and a list of the dates
         """
-        name_match = re.search(r'Name:(.*)', self.transcription)
+        # Extract Name
+        name_match = re.search(r'Name:\s*(.*)', self.detail_extraction)
         name = name_match.group(1).strip() if name_match else None
 
-        dates_match = re.search(r'Date:\[(.*?)\]', self.transcription)
+        # Treat "N/A" as None
+        if name == "N/A":
+            name = None
+
+        # Extract Dates
+        dates_match = re.search(r'Date:\s*\[(.*?)\]', self.detail_extraction)
         dates = dates_match.group(1).split(', ') if dates_match else []
 
-        raw_match = re.search(r'Raw:(.*)', self.transcription, re.DOTALL)
-        raw_text = raw_match.group(1).strip() if raw_match else None
-
-        return name, dates, raw_text
+        return name, dates
 
     def extract_names(self):
         """
-        Extracts and returns the photographers name from the raw_transcription
+        Extracts and returns the photographers name from the transcription
         Inputs:
             - None
         Outputs:
@@ -48,7 +48,7 @@ class Transcription():
 
     def extract_dates(self):
         """
-        Extracts and returns a list of dates present in the raw_transcription
+        Extracts and returns a list of dates present in the transcription
         Inputs:
             - None
         Outputs:
@@ -60,13 +60,3 @@ class Transcription():
             return ""
         else:
             return self.dates
-
-    def get_raw_transcription(self):
-        """
-        Gets the raw transcription that was initialized during object creation (self.transcription) and returns it
-        Inputs:
-            - None
-        Outputs:
-            - Returns self.transcription as the raw transcription
-        """
-        return self.raw

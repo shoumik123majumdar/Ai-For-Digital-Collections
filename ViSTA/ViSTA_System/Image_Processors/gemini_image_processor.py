@@ -1,4 +1,4 @@
-from image_processor import ImageProcessor
+from .image_processor import ImageProcessor
 import google.generativeai as genai
 import os
 from PIL import Image

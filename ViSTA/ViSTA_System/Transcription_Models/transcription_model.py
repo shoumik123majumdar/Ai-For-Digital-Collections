@@ -5,17 +5,20 @@ class TranscriptionModel(ABC):
     """
     Interface for classes that handle transcribing text from the back of the image
     """
-    def __init__(self,prompt_file,token_tracker):
+    def __init__(self,raw_transcription_prompt_file,detail_extraction_prompt_file,token_tracker):
         self.token_tracker = token_tracker
-        with open(prompt_file, "r") as file:
-            self.prompt = file.read()
+        with open(raw_transcription_prompt_file, "r") as file:
+            self.raw_transcription_prompt = file.read()
+        with open(detail_extraction_prompt_file, "r") as file:
+            self.detail_extraction_prompt = file.read()
         #self.model <- model should be instantiated in constructor
 
 
     @abstractmethod
     def generate_transcription(self,image_file):
         """
-        Generates raw transcription from image at self.file_path
+        Generates transcription from image at self.file_path
+        Also extracts details from transcription like photographer names and dates
         Inputs:
             - image_file: image object you want to generate transcription for
         Outputs:
