@@ -1,6 +1,6 @@
 from httplib2.auth import token
 
-from metadata import Metadata
+from .metadata import Metadata
 
 class ExtendedMetadata(Metadata):
     """
@@ -23,7 +23,7 @@ class ExtendedMetadata(Metadata):
         Gets the full transcription (including photographer name and dates) that was generated for the image.
         :return: The generated transcription for the image.
         """
-        return self._transcription.get_raw_transcription()
+        return self._transcription.transcription
 
     def get_photographer_name(self):
         """

@@ -59,7 +59,7 @@ image_back = image_processor_model.process_image(image_back_path)
 image_front = image_processor_model.process_image(image_front_path)
 
 # Initialize transcription model
-transcription_prompt = "../transcription_prompt.txt"
+transcription_prompt = "../deprecated_transcription_prompt.txt"
 transcription_model = ClaudeTranscriptionModel(transcription_prompt)
 
 # Initialize image description model

@@ -1,4 +1,4 @@
-from image_description_model import ImageDescriptionModel
+from .image_description_model import ImageDescriptionModel
 import google.generativeai as genai
 import os
 

@@ -1,5 +1,4 @@
 Transcribe what's on this photo
-
 Transcription rules
 In general, use modern spacing conventions when transcribing from the source. Make no attempt to preserve additional or irregular spacing between words. If spacing between words in the source is ambiguous, or lacking, include spaces in the transcription to separate the words as needed.
 Indicate missing letters in words with a “-“
