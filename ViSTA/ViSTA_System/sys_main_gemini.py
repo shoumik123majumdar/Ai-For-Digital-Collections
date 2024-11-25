@@ -29,7 +29,7 @@ def process_manifest_images(manifest,image_directory, generate_metadata):
     manifest = manifest.sort_values(by=['File Name', 'Sequence'])
 
     front_image_path = ""
-    back_image_path = ""
+    back_image_path = None
 
     for _, row in manifest.iterrows():
         file_name = row['File Name']
@@ -43,17 +43,20 @@ def process_manifest_images(manifest,image_directory, generate_metadata):
         elif sequence == 2:  # back image
             back_image_path = image_path
 
-        #print(front_image_path)
+        print(front_image_path)
+        print(back_image_path)
+        print(f"sequence:{sequence}")
+        print(f"last_item:{last_item}")
 
         # process front-back pair or single front image if it is the last item
-        if last_item:
+        if last_item==1.0:
             if back_image_path:
-                generate_metadata(front_image_path,back_image_path)
+                #generate_metadata(front_image_path,back_image_path)
                 # reset paths for next group
                 front_image_path = ""
                 back_image_path = ""
             else:
-                generate_metadata(front_image_path)
+                #generate_metadata(front_image_path)
                 # reset paths for next group
                 front_image_path = ""
                 back_image_path = ""
@@ -72,11 +75,12 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
     :param image_back_path: Optional parameter that contains the Path to the image back if necessary
     :return: N/A. Results are written to a csv file
     """
-
+    #print(image_front_path)
+    #print(image_back_path)
     image_front = image_processor.process_image(image_front_path)
     context = ""
     transcription = None
-    if image_back_path is not None:
+    if image_back_path:
         image_back = image_processor.process_image(image_back_path)
         transcription = transcription_model.generate_transcription(image_back)
         context = transcription.transcription
@@ -85,15 +89,16 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
     abstract = image_description_model.generate_abstract(image_front, context)
 
     metadata = Metadata(image_front.display_name,title,abstract,token_tracker)
-    if image_back_path is not None:
+    if image_back_path:
         metadata = ExtendedMetadata(image_front.display_name,title,abstract,transcription,token_tracker)
 
     metadata_exporter.write_to_csv(metadata, csv_file)
     token_tracker.reset()
 
 def main():
+    #manifest = load_manifest("../test-batches/fronts-backs_samples/manifest.xlsx")
     manifest = load_manifest("../test-batches/fronts_samples/manifest.xlsx")
-    image_directory = "../test-batches/fronts_samples"
+    image_directory = "../test-batches/fronts-backs_samples"
     #Initialize image_processor
     image_processor = GeminiImageProcessor()
 
@@ -115,15 +120,15 @@ def main():
     metadata_exporter = MetadataExporter()
 
     #Point to result csv files
-    #result_double_csv = "CSV_files/double_image_results.csv"
-    result_single_csv = "CSV_files/fronts_samples_test_1.csv"
+    result_double_csv = "CSV_files/fronts-backs_samples_test.csv"
+    #result_single_csv = "CSV_files/fronts_samples_test.csv"
 
     #ACTUAL PROCESSING CODE AFTER MODEL INSTANTIATION
     process_manifest_images(
         manifest,
         image_directory,
         lambda front, back=None: generate_metadata(
-            front, image_processor, transcription_model, image_description_model, metadata_exporter, result_single_csv,token_tracker, back
+            front, image_processor, transcription_model, image_description_model, metadata_exporter, result_double_csv  ,token_tracker, back
         )
     )
 
