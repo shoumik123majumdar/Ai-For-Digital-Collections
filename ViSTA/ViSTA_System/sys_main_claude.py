@@ -9,11 +9,14 @@ from token_tracker import TokenTracker
 import pandas as pd
 
 
-def load_manifest(manifest_path):
+def load_manifest(manifest):
     """
     Load the image manifest to a pandas dataframe
     """
-    return pd.read_excel(manifest_path)
+    manifest_dataframe = pd.read_excel(manifest)
+    manifest_dataframe['Last Item'] = manifest_dataframe['Last Item'].fillna(False).astype(bool)
+    return manifest_dataframe
+
 
 def process_images_from_manifest(manifest, image_directory, generate_metadata):
     """
@@ -26,7 +29,7 @@ def process_images_from_manifest(manifest, image_directory, generate_metadata):
     manifest = manifest.sort_values(by=['File Name', 'Sequence'])
 
     front_image_path = ""
-    back_image_path = ""
+    back_image_path = None
 
     for _, row in manifest.iterrows():
         file_name = row['File Name']
@@ -44,6 +47,8 @@ def process_images_from_manifest(manifest, image_directory, generate_metadata):
         # process front-back pair or single front image if it is the last item
         if last_item:
             if back_image_path:
+                print("front_image_path")
+                print("back_image_path")
                 generate_metadata(front_image_path, back_image_path)
                 # reset paths for next group
                 front_image_path = ""
@@ -55,17 +60,28 @@ def process_images_from_manifest(manifest, image_directory, generate_metadata):
                 back_image_path = ""
 
 
-def generate_metadata(front_image_path, image_processor, transcription_model, description_model, metadata_exporter, csv_file, back_image_path=None ):
+def generate_metadata(
+        front_image_path,
+        image_processor,
+        transcription_model,
+        description_model,
+        metadata_exporter,
+        single_image_csv,
+        front_back_csv,
+        token_tracker,
+        back_image_path=None
+):
     """
-    Generates metadata for given images
 
-    :param front_image_path: Path to front image
-    :param image_processor: Pre-initialized image processor
-    :param transcription_model: Pre-initialized Transcription model
-    :param description_model: Pre-initialized Description model
-    :param metadata_exporter: Pre-initialized Metadata Exporter for exporting metadata
-    :param csv_file: Path to csv file
-    :param back_image_path: Path to back image (if any)
+    :param front_image_path:
+    :param image_processor:
+    :param transcription_model:
+    :param description_model:
+    :param metadata_exporter:
+    :param single_image_csv:
+    :param front_back_csv:
+    :param token_tracker:
+    :param back_image_path:
     :return:
     """
 
@@ -73,9 +89,9 @@ def generate_metadata(front_image_path, image_processor, transcription_model, de
     image_front = image_processor.process_image(front_image_path)
 
     # process back image (if any) and generate metadata
-    context = ""
+    context = None
     transcription = None
-    if back_image_path is not None:
+    if back_image_path:
         image_back = image_processor.process_image(back_image_path)
         transcription = transcription_model.generate_transcription(image_back)
         context = transcription.transcription
@@ -84,11 +100,28 @@ def generate_metadata(front_image_path, image_processor, transcription_model, de
     title = description_model.generate_title(image_front, context)
     abstract = description_model.generate_abstract(image_front, context)
 
-    metadata = Metadata(image_front.display_name, title, abstract, transcription, token_tracker)
-    if back_image_path is not None:
-        metadata = ExtendedMetadata(image_front.display_name, title, abstract, transcription, token_tracker)
+    # determine single or front-back image
+    if back_image_path:
+        # save metadata for front-back image pair
+        metadata = ExtendedMetadata(
+            image_front.display_name,
+            title,
+            abstract,
+            transcription,
+            token_tracker
+        )
+        metadata_exporter.write_to_csv(metadata, front_back_csv)
+    else:
+        # save metadata for single image
+        metadata = Metadata(
+            image_front.display_name,
+            title,
+            abstract,
+            token_tracker
+        )
+        metadata_exporter.write_to_csv(metadata, single_image_csv)
 
-    metadata_exporter.write_to_csv(metadata, csv_file)
+    # reset token tracker
     token_tracker.reset()
 
 
@@ -103,27 +136,33 @@ def main():
     title_prompt_file = "Prompts/Title_Prompts/title_prompt.txt"
     abstract_prompt_file = "Prompts/Abstract_Prompts/abstract_prompt.txt"
 
-
-    # load manifest
-    manifest = load_manifest()
-
     # initialize models
+    token_tracker = TokenTracker()
     image_processor = ClaudeImageProcessor
     transcription_model = ClaudeTranscriptionModel(transcription_prompt, detail_extraction_prompt_file, token_tracker)
     image_description_model = ClaudeImageDescriptionModel(title_prompt_file, abstract_prompt_file, token_tracker)
     metadata_exporter = MetadataExporter()
 
     # save to csv file
-    result_single_csv = "CSV_files/fronts_samples_test_1.csv"
+    result_single_csv = "CSV_files/claude_front_sample_test.csv"
+    result_front_back_csv = "CSV_files/claude_front-back_sample_test.csv"
 
     # process images from manifest
     process_images_from_manifest(
         manifest,
         image_directory,
-        lambda front, back: generate_metadata(
-            front, image_processor, transcription_model, image_description_model, metadata_exporter, "result_single_csv", back
+        lambda front, back=None: generate_metadata(
+            front,
+            image_processor,
+            transcription_model,
+            image_description_model,
+            metadata_exporter,
+            result_single_csv,
+            result_front_back_csv,
+            back
         )
     )
+
 
 if __name__ == '__main__':
     main()
