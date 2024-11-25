@@ -46,12 +46,12 @@ def process_manifest_images(manifest,image_directory, generate_metadata):
             back_image_path = image_path
 
 
-
+        print(sequence)
         # process front-back pair or single front image if it is the last item
         if last_item:
             if back_image_path:
-                print("front_image_path")
-                print("back_image_path")
+                print(front_image_path)
+                print(back_image_path)
                 generate_metadata(front_image_path,back_image_path)
                 # reset paths for next group
                 front_image_path = ""
@@ -95,9 +95,9 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
     token_tracker.reset()
 
 def main():
-    manifest = load_manifest("../test-batches/fronts-backs_samples/manifest.xlsx")
+    manifest = load_manifest("../efs-dps/manifests")
     #manifest = load_manifest("../test-batches/fronts_samples/manifest.xlsx")
-    image_directory = "../test-batches/fronts-backs_samples"
+    image_directory = "../efs-dps/fronts-backs_samples"
 
     #Initialize image_processor
     image_processor = GeminiImageProcessor()
@@ -120,15 +120,15 @@ def main():
     metadata_exporter = MetadataExporter()
 
     #Point to result csv files
-    result_double_csv = "CSV_files/fronts-backs_samples_test.csv"
-    #result_single_csv = "CSV_files/fronts_samples_test.csv"
+    #result_double_csv = "CSV_files/fronts-backs_samples_test.csv"
+    result_single_csv = "CSV_files/fronts_samples_test.csv"
 
     #ACTUAL PROCESSING CODE AFTER MODEL INSTANTIATION
     process_manifest_images(
         manifest,
         image_directory,
         lambda front, back=None: generate_metadata(
-            front, image_processor, transcription_model, image_description_model, metadata_exporter, result_double_csv  ,token_tracker, back
+            front, image_processor, transcription_model, image_description_model, metadata_exporter, result_single_csv  ,token_tracker, back
         )
     )
 
