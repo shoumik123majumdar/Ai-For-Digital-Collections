@@ -14,7 +14,9 @@ def load_manifest(manifest):
     :param manifest: manifest file.xlsx
     :return: manifest file as a DataFrame
     """
-    return pd.read_excel(manifest)
+    manifest_dataframe = pd.read_excel(manifest)
+    manifest_dataframe['Last Item'] = manifest_dataframe['Last Item'].fillna(False).astype(bool)
+    return manifest_dataframe
 
 def process_manifest_images(manifest,image_directory, generate_metadata):
     """
@@ -43,20 +45,19 @@ def process_manifest_images(manifest,image_directory, generate_metadata):
         elif sequence == 2:  # back image
             back_image_path = image_path
 
-        print(front_image_path)
-        print(back_image_path)
-        print(f"sequence:{sequence}")
-        print(f"last_item:{last_item}")
+
 
         # process front-back pair or single front image if it is the last item
-        if last_item==1.0:
+        if last_item:
             if back_image_path:
-                #generate_metadata(front_image_path,back_image_path)
+                print("front_image_path")
+                print("back_image_path")
+                generate_metadata(front_image_path,back_image_path)
                 # reset paths for next group
                 front_image_path = ""
                 back_image_path = ""
             else:
-                #generate_metadata(front_image_path)
+                generate_metadata(front_image_path)
                 # reset paths for next group
                 front_image_path = ""
                 back_image_path = ""
@@ -75,8 +76,6 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
     :param image_back_path: Optional parameter that contains the Path to the image back if necessary
     :return: N/A. Results are written to a csv file
     """
-    #print(image_front_path)
-    #print(image_back_path)
     image_front = image_processor.process_image(image_front_path)
     context = ""
     transcription = None
@@ -96,9 +95,10 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
     token_tracker.reset()
 
 def main():
-    #manifest = load_manifest("../test-batches/fronts-backs_samples/manifest.xlsx")
-    manifest = load_manifest("../test-batches/fronts_samples/manifest.xlsx")
+    manifest = load_manifest("../test-batches/fronts-backs_samples/manifest.xlsx")
+    #manifest = load_manifest("../test-batches/fronts_samples/manifest.xlsx")
     image_directory = "../test-batches/fronts-backs_samples"
+
     #Initialize image_processor
     image_processor = GeminiImageProcessor()
 
