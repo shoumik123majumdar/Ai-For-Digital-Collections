@@ -1,13 +1,12 @@
+from Image_Processors.claude_image_processor import ClaudeImageProcessor
+from Transcription_Models.claude_transcription_model import ClaudeTranscriptionModel
+from Image_Description_Models.claude_image_description_model import ClaudeImageDescriptionModel
+from Metadata_Exporters.metadata_exporter import MetadataExporter
+from Metadata_Exporters.metadata import Metadata
+from Metadata_Exporters.extended_metadata import ExtendedMetadata
+from Transcription_Models.transcription import Transcription
+from token_tracker import TokenTracker
 import pandas as pd
-from pathlib import Path
-from claude_image_processor import ClaudeImageProcessor
-from claude_transcription_model import ClaudeTranscriptionModel
-from claude_image_description_model import ClaudeImageDescriptionModel
-from metadata_exporter import MetadataExporter
-from metadata import Metadata
-from extended_metadata import ExtendedMetadata
-from transcription import Transcription
-import time
 
 
 def load_manifest(manifest_path):
@@ -26,8 +25,8 @@ def process_images_from_manifest(manifest, image_directory, generate_metadata):
     """
     manifest = manifest.sort_values(by=['File Name', 'Sequence'])
 
-    front_image_path = None
-    back_image_path = None
+    front_image_path = ""
+    back_image_path = ""
 
     for _, row in manifest.iterrows():
         file_name = row['File Name']
@@ -35,7 +34,7 @@ def process_images_from_manifest(manifest, image_directory, generate_metadata):
         last_item = row['Last Item']
 
         # determine the file path
-        image_path = Path(image_directory) / file_name
+        image_path = f"{image_directory}/{file_name}"
 
         if sequence == 1: # front image
             front_image_path = image_path
@@ -43,11 +42,17 @@ def process_images_from_manifest(manifest, image_directory, generate_metadata):
             back_image_path = image_path
 
         # process front-back pair or single front image if it is the last item
-        if last_item == "TRUE":
-            generate_metadata(front_image_path, back_image_path)
-            # reset paths for next group
-            front_image_path = None
-            back_image_path = None
+        if last_item:
+            if back_image_path:
+                generate_metadata(front_image_path, back_image_path)
+                # reset paths for next group
+                front_image_path = ""
+                back_image_path = ""
+            else:
+                generate_metadata(front_image_path)
+                # reset paths for next group
+                front_image_path = ""
+                back_image_path = ""
 
 
 def generate_metadata(front_image_path, image_processor, transcription_model, description_model, metadata_exporter, csv_file, back_image_path=None ):
@@ -64,61 +69,39 @@ def generate_metadata(front_image_path, image_processor, transcription_model, de
     :return:
     """
 
-    print(f"Processing images:")
-    print(f"Front Image: {front_image_path}")
-    if back_image_path:
-        print(f"Back Image: {back_image_path}")
-
     # process front image
-    front_image_data = image_processor.process_image(front_image_path)
+    image_front = image_processor.process_image(front_image_path)
 
     # process back image (if any) and generate metadata
-    context = None
-    if back_image_path:
-        back_image_data = image_processor.process_image(back_image_path)
-        transcription = transcription_model.generate_transcription(back_image_data)
-        context = transcription.get_raw_transcription()
-        total_token_count = transcription_model.get_total_tokens()
-        total_input_token_count = transcription_model.get_input_tokens()
-        total_output_token_count = transcription_model.get_output_tokens()
-    else:
-        back_image_data = None
+    context = ""
+    transcription = None
+    if back_image_path is not None:
+        image_back = image_processor.process_image(back_image_path)
+        transcription = transcription_model.generate_transcription(image_back)
+        context = transcription.transcription
 
     # generate title and abstract using description model
-    title = description_model.generate_title(front_image_data, context)
-    abstract = description_model.generate_abstract(front_image_data, context)
+    title = description_model.generate_title(image_front, context)
+    abstract = description_model.generate_abstract(image_front, context)
 
-    total_token_count += description_model.get_total_tokens()
-    total_input_token_count += description_model.get_total_input_tokens()
-    total_output_token_count += description_model.get_total_output_tokens()
+    metadata = Metadata(image_front.display_name, title, abstract, transcription, token_tracker)
+    if back_image_path is not None:
+        metadata = ExtendedMetadata(image_front.display_name, title, abstract, transcription, token_tracker)
 
-    print(total_token_count)
-    print(total_input_token_count)
-    print(total_output_token_count)
-
-    # Export metadata
-    metadata = ExtendedMetadata(
-        file_name=front_image_path.name,
-        title=title,
-        abstract=abstract,
-        transcription=transcription,
-        total_token_count=total_token_count,
-        total_input_token_count=total_input_token_count,
-        total_output_token_count=total_output_token_count
-    )
-
-    # write to csv
     metadata_exporter.write_to_csv(metadata, csv_file)
+    token_tracker.reset()
+
 
 def main():
     # paths to manifest and image directory
-    manifest_path = ""
-    image_directory = ""
+    manifest = load_manifest("../test-batches/fronts_samples/manifest.xlsx")
+    image_directory = "../test-batches/fronts_samples"
 
     # paths to prompts
-    transcription_prompt = "../deprecated_transcription_prompt.txt"
-    title_prompt_file = "../title_prompt.txt"
-    abstract_prompt_file = "../abstract_prompt.txt"
+    transcription_prompt = "Prompts/Transcription_Prompts/transcription_step_one.txt"
+    detail_extraction_prompt_file = "Prompts/Transcription_Prompts/transcription_step_two.txt"
+    title_prompt_file = "Prompts/Title_Prompts/title_prompt.txt"
+    abstract_prompt_file = "Prompts/Abstract_Prompts/abstract_prompt.txt"
 
 
     # load manifest
@@ -126,16 +109,19 @@ def main():
 
     # initialize models
     image_processor = ClaudeImageProcessor
-    transcription_model = ClaudeTranscriptionModel(transcription_prompt)
-    image_description_model = ClaudeImageDescriptionModel(title_prompt_file, abstract_prompt_file)
+    transcription_model = ClaudeTranscriptionModel(transcription_prompt, detail_extraction_prompt_file, token_tracker)
+    image_description_model = ClaudeImageDescriptionModel(title_prompt_file, abstract_prompt_file, token_tracker)
     metadata_exporter = MetadataExporter()
+
+    # save to csv file
+    result_single_csv = "CSV_files/fronts_samples_test_1.csv"
 
     # process images from manifest
     process_images_from_manifest(
         manifest,
         image_directory,
         lambda front, back: generate_metadata(
-            front, image_processor, transcription_model, image_description_model, metadata_exporter, "", back
+            front, image_processor, transcription_model, image_description_model, metadata_exporter, "result_single_csv", back
         )
     )
 
@@ -143,67 +129,3 @@ if __name__ == '__main__':
     main()
 
 
-#def generate_metadata_front_and_back(image_front,image_back,transcription_model,image_description_model,metadata_exporter,csv_file):
-    #transcription = transcription_model.generate_transcription(image_back)
-    #context = transcription.get_raw_transcription()
-    #total_token_count = transcription_model.get_total_tokens()
-    #total_input_token_count = transcription_model.get_input_tokens()
-    #total_output_token_count = transcription_model.get_output_tokens()
-
-    #print(total_token_count)
-    #print(total_input_token_count)
-    #print(total_output_token_count)
-
-    #title = image_description_model.generate_title(image_front,context)
-    #time.sleep(60)
-    #abstract = image_description_model.generate_abstract(image_front,context)
-
-    #total_token_count += image_description_model.get_total_tokens()
-    #total_input_token_count += image_description_model.get_total_input_tokens()
-    #total_output_token_count += image_description_model.get_total_output_tokens()
-
-    #print(total_token_count)
-    #print(total_input_token_count)
-   # print(total_output_token_count)
-
-  #  metadata = ExtendedMetadata(image_front.display_name,title,abstract,transcription,total_token_count,total_input_token_count,total_output_token_count)
- #   metadata_exporter.write_to_csv(metadata,csv_file)
-
-
-#def generate_metadata_single_image(image_front,image_description_model,metadata_exporter,csv_file):
-    #title = image_description_model.generate_title(image_front,"")
-    #abstract = image_description_model.generate_abstract(image_front,"")
-
-    #total_token_count = image_description_model.get_total_tokens()
-    #total_input_token_count = image_description_model.get_total_input_tokens()
-    #total_output_token_count = image_description_model.get_total_output_tokens()
-
-  #  metadata = Metadata(image_front.display_name, title, abstract,total_token_count,
-   #                     total_input_token_count, total_output_token_count)
- #   metadata_exporter.write_to_csv(metadata, csv_file)
-
-
-#result_double_csv = "CSV_files/double_image_results.csv"
-#result_single_csv = "CSV_files/fronts_samples_test_1.csv"
-#image_front_path = "../Test_Images/system_test_front.tif"
-#image_back_path = "../Test_Images/system_test_back.tif"
-
-# Image preprocessing step
-#image_processor_model = ClaudeImageProcessor()
-#image_back = image_processor_model.process_image(image_back_path)
-#image_front = image_processor_model.process_image(image_front_path)
-
-# Initialize transcription model
-#transcription_prompt = "../deprecated_transcription_prompt.txt"
-#transcription_model = ClaudeTranscriptionModel(transcription_prompt)
-
-# Initialize image description model
-#title_prompt_file = "../title_prompt.txt"
-#abstract_prompt_file = "../abstract_prompt.txt"
-#image_description_model = ClaudeImageDescriptionModel(title_prompt_file, abstract_prompt_file)
-
-#Initialize metadata exporter class
-#metadata_exporter = MetadataExporter()
-
-#generate_metadata_front_and_back(image_front,image_back,transcription_model,image_description_model,metadata_exporter,result_double_csv)
-#generate_metadata_single_image(image_front,image_description_model,metadata_exporter,result_single_csv)
