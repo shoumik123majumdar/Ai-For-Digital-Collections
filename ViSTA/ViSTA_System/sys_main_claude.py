@@ -183,8 +183,8 @@ if __name__ == '__main__':
  #   metadata_exporter.write_to_csv(metadata, csv_file)
 
 
-#result_double_csv = "CSV_files/double_image_results.csv"
-#result_single_csv = "CSV_files/fronts_samples_test_1.csv"
+#result_double_csv = "CSV_files/fronts-backs_samples_test.csv"
+#result_single_csv = "CSV_files/fronts_samples_test.csv"
 #image_front_path = "../Test_Images/system_test_front.tif"
 #image_back_path = "../Test_Images/system_test_back.tif"
 
