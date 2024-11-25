@@ -1,0 +1,37 @@
+def generate_metadata_single_image(image_path,image_processor,image_description_model,metadata_exporter,csv_file,token_tracker):
+    """
+    Generates metadata for a single image and writes it to a csv file
+    :param image_front_path: path to the image
+    :param image_processor: ImageProcessor object to process image @ image_front_path
+    :param image_description_model: ImageDescriptionModel object to generate title and abstract
+    :param metadata_exporter: MetadataExporter object to write resulting Metadata object to csv file
+    :param csv_file: The csv file you want to append the Metadata to
+    :param token_tracker: TokenTracker object to track the tokens used to generate the metadata
+    :return: N/A. Results are written to a csv file
+    """
+    image_front = image_processor.process_image(image_path)
+
+    title = image_description_model.generate_title(image_front,"")
+    abstract = image_description_model.generate_abstract(image_front,"")
+
+    metadata = Metadata(image_front.display_name, title, abstract,token_tracker)
+    metadata_exporter.write_to_csv(metadata, csv_file)
+
+    #reset token counting mechanism after every metadata object generated
+    token_tracker.reset()
+
+def generate_metadata_front_and_back(image_front_path,image_back_path,image_processor,transcription_model,image_description_model,metadata_exporter,csv_file,token_tracker):
+    image_front = image_processor.process_image(image_front_path)
+    image_back = image_processor.process_image(image_back_path)
+
+    transcription = transcription_model.generate_transcription(image_back)
+    context = transcription.transcription
+
+    title = image_description_model.generate_title(image_front,context)
+     #To bypass the 2 requests per minute limitation set for the free tier of the Gemini API
+    abstract = image_description_model.generate_abstract(image_front,context)
+
+    metadata = ExtendedMetadata(image_front.display_name,title,abstract,transcription,token_tracker)
+    metadata_exporter.write_to_csv(metadata,csv_file)
+
+    token_tracker.reset()

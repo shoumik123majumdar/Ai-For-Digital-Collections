@@ -81,7 +81,6 @@ def generate_metadata(front_image_path, image_processor, transcription_model, de
         total_token_count = transcription_model.get_total_tokens()
         total_input_token_count = transcription_model.get_input_tokens()
         total_output_token_count = transcription_model.get_output_tokens()
-
     else:
         back_image_data = None
 
@@ -185,7 +184,7 @@ if __name__ == '__main__':
 
 
 #result_double_csv = "CSV_files/double_image_results.csv"
-#result_single_csv = "CSV_files/single_image_results.csv"
+#result_single_csv = "CSV_files/fronts_samples_test_1.csv"
 #image_front_path = "../Test_Images/system_test_front.tif"
 #image_back_path = "../Test_Images/system_test_back.tif"
 
