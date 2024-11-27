@@ -97,7 +97,7 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
 def main():
     manifest = load_manifest("../efs-dps/manifests")
     #manifest = load_manifest("../test-batches/fronts_samples/manifest.xlsx")
-    image_directory = "../efs-dps/fronts-backs_samples"
+    image_directory = "../efs-dps/fronts_samples"
 
     #Initialize image_processor
     image_processor = GeminiImageProcessor()

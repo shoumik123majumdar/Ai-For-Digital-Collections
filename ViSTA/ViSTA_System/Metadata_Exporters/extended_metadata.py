@@ -1,5 +1,3 @@
-from httplib2.auth import token
-
 from .metadata import Metadata
 
 class ExtendedMetadata(Metadata):
