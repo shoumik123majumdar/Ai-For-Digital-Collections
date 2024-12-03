@@ -46,12 +46,9 @@ def process_manifest_images(manifest,image_directory, generate_metadata):
             back_image_path = image_path
 
 
-        print(sequence)
         # process front-back pair or single front image if it is the last item
         if last_item:
             if back_image_path:
-                print(front_image_path)
-                print(back_image_path)
                 generate_metadata(front_image_path,back_image_path)
                 # reset paths for next group
                 front_image_path = ""
@@ -95,9 +92,9 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
     token_tracker.reset()
 
 def main():
-    manifest = load_manifest("../efs-dps/manifests")
-    #manifest = load_manifest("../test-batches/fronts_samples/manifest.xlsx")
+    manifest = load_manifest("../efs-dps/fronts_samples/manifest.xlsx")
     image_directory = "../efs-dps/fronts_samples"
+    result_single_csv = "CSV_files/fronts_samples_test.csv"
 
     #Initialize image_processor
     image_processor = GeminiImageProcessor()
@@ -119,10 +116,6 @@ def main():
     #Initialize metadata exporter class
     metadata_exporter = MetadataExporter()
 
-    #Point to result csv files
-    #result_double_csv = "CSV_files/fronts-backs_samples_test.csv"
-    result_single_csv = "CSV_files/fronts_samples_test.csv"
-
     #ACTUAL PROCESSING CODE AFTER MODEL INSTANTIATION
     process_manifest_images(
         manifest,
@@ -135,4 +128,14 @@ def main():
 if __name__ == '__main__':
     main()
 
+#LOG NECESSITIES
+#File Name
+#process-start-time
+#process-end-time
+#or calculation
+#Response code/ True False
 
+#Prompt for csv file name
+
+#Word Order/level of phrases
+#Keyword ground truth
