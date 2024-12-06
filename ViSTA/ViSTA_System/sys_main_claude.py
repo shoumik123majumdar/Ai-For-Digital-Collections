@@ -11,7 +11,9 @@ import pandas as pd
 
 def load_manifest(manifest):
     """
-    Load the image manifest to a pandas dataframe
+    load the given manifest file
+    :param manifest: manifest file (.xlsx)
+    :return: manifest file as a DataFrame
     """
     manifest_dataframe = pd.read_excel(manifest)
     manifest_dataframe['Last Item'] = manifest_dataframe['Last Item'].fillna(False).astype(bool)
@@ -39,16 +41,14 @@ def process_images_from_manifest(manifest, image_directory, generate_metadata):
         # determine the file path
         image_path = f"{image_directory}/{file_name}"
 
-        if sequence == 1: # front image
+        if sequence == 1:  # front image
             front_image_path = image_path
-        elif sequence == 2: # back image
+        elif sequence == 2:  # back image
             back_image_path = image_path
 
         # process front-back pair or single front image if it is the last item
         if last_item:
             if back_image_path:
-                print("front_image_path")
-                print("back_image_path")
                 generate_metadata(front_image_path, back_image_path)
                 # reset paths for next group
                 front_image_path = ""
@@ -72,16 +72,18 @@ def generate_metadata(
         back_image_path=None
 ):
     """
+    Generates metadata for a single image and writes it to a csv file
+    Works with either a single image, or an image_front/back pairing
 
-    :param front_image_path:
-    :param image_processor:
-    :param transcription_model:
-    :param description_model:
-    :param metadata_exporter:
-    :param single_image_csv:
-    :param front_back_csv:
-    :param token_tracker:
-    :param back_image_path:
+    :param front_image_path: path to front image
+    :param image_processor: ImageProcessor object to process the image
+    :param transcription_model: TranscriptionModel object to generate a Transcription
+    :param description_model: ImageDescriptionModel object to generate title and abstract
+    :param metadata_exporter: MetadataExporter object to write resulting Metadata object to csv file
+    :param single_image_csv: csv file for single image metadata
+    :param front_back_csv: csv file for front-back image metadata
+    :param token_tracker: TokenTracker object to track the tokens used to generate the metadata
+    :param back_image_path: Optional parameter that contains the Path to the image back if necessary
     :return:
     """
 
@@ -127,8 +129,8 @@ def generate_metadata(
 
 def main():
     # paths to manifest and image directory
-    manifest = load_manifest("../test-batches/fronts_samples/manifest.xlsx")
-    image_directory = "../test-batches/fronts_samples"
+    manifest = load_manifest("../efs-dps/fronts_samples/manifest.xlsx")
+    image_directory = "../efs-dps/fronts_samples"
 
     # paths to prompts
     transcription_prompt = "Prompts/Transcription_Prompts/transcription_step_one.txt"
@@ -144,7 +146,7 @@ def main():
     metadata_exporter = MetadataExporter()
 
     # save to csv file
-    result_single_csv = "CSV_files/claude_front_sample_test.csv"
+    result_single_csv = "CSV_files/fronts_samples_test.csv"
     result_front_back_csv = "CSV_files/claude_front-back_sample_test.csv"
 
     # process images from manifest
