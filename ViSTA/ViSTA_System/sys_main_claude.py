@@ -146,7 +146,7 @@ def main():
     metadata_exporter = MetadataExporter()
 
     # save to csv file
-    result_single_csv = "CSV_files/fronts_samples_test.csv"
+    result_single_csv = "CSV_files/fronts_gemini_test.csv"
     result_front_back_csv = "CSV_files/claude_front-back_sample_test.csv"
 
     # process images from manifest
