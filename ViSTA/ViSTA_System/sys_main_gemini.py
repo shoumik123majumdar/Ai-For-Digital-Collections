@@ -128,7 +128,7 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
 
 def main():
 
-    manifest = load_manifest("/home/ec2-user/efs-dps/fronts-backs_samples/manifest.xlsx")
+    manifest = load_manifest("/home/ec2-user/efs-dps/manifests/manifest.xlsx")
     image_directory = "/home/ec2-user/efs-dps/fronts-backs_samples"
 
     """
