@@ -1,3 +1,7 @@
+#!/usr/bin/python
+import sys
+sys.path.append("/home/ViSTA/ViSTA/ViSTA_System")
+
 from Image_Processors.claude_image_processor import ClaudeImageProcessor
 from Transcription_Models.claude_transcription_model import ClaudeTranscriptionModel
 from Image_Description_Models.claude_image_description_model import ClaudeImageDescriptionModel
