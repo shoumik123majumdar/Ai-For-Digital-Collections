@@ -10,7 +10,7 @@ class ClaudeTranscriptionModel(TranscriptionModel):
 
     def __init__(self, raw_transcription_prompt_file,detail_extraction_prompt_file,token_tracker):
         super().__init__(raw_transcription_prompt_file,detail_extraction_prompt_file,token_tracker)
-        api_key = os.environ.get('API_KEY')
+        api_key = os.environ.get('CLAUDE_KEY')
         self.client = anthropic.Anthropic(api_key=self.api_key)
 
     def generate_transcription(self, image_file):

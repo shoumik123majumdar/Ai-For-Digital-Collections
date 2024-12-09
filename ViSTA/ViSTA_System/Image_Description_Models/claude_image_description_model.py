@@ -10,7 +10,7 @@ class ClaudeImageDescriptionModel(ImageDescriptionModel):
 
     def __init__(self, title_prompt_file, abstract_prompt_file, token_tracker):
         super().__init__(title_prompt_file, abstract_prompt_file, token_tracker)
-        api_key = os.environ.get("CLAUDE_API_KEY")
+        api_key = os.environ.get("CLAUDE_KEY")
         self.client = anthropic.Anthropic(api_key=api_key)
 
     def generate_title(self, image_file, context=""):

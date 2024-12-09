@@ -4,9 +4,10 @@ from Image_Description_Models.claude_image_description_model import ClaudeImageD
 from Metadata_Exporters.metadata_exporter import MetadataExporter
 from Metadata_Exporters.metadata import Metadata
 from Metadata_Exporters.extended_metadata import ExtendedMetadata
-from Transcription_Models.transcription import Transcription
+#from logger import Logger
 from token_tracker import TokenTracker
 import pandas as pd
+from datetime import datetime
 
 
 def load_manifest(manifest):
@@ -87,6 +88,8 @@ def generate_metadata(
     :return:
     """
 
+
+
     # process front image
     image_front = image_processor.process_image(front_image_path)
 
@@ -127,10 +130,11 @@ def generate_metadata(
     token_tracker.reset()
 
 
+
 def main():
     # paths to manifest and image directory
-    manifest = load_manifest("../efs-dps/fronts_samples/manifest.xlsx")
-    image_directory = "../efs-dps/fronts_samples"
+    manifest = load_manifest("/home/ec2-user/efs-dps/manifests/manifest.xlsx")
+    image_directory = "/home/ec2-user/efs-dps/fronts-backs_samples"
 
     # paths to prompts
     transcription_prompt = "Prompts/Transcription_Prompts/transcription_step_one.txt"
@@ -146,7 +150,7 @@ def main():
     metadata_exporter = MetadataExporter()
 
     # save to csv file
-    result_single_csv = "CSV_files/fronts_gemini_test.csv"
+    result_single_csv = "CSV_files/claude_front_sample_test.csv"
     result_front_back_csv = "CSV_files/claude_front-back_sample_test.csv"
 
     # process images from manifest
