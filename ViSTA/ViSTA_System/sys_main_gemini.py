@@ -128,18 +128,9 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
 
 def main():
 
-    manifest = load_manifest("/home/ec2-user/efs-dps/manifests/manifest.xlsx")
+    manifest = load_manifest("/home/ec2-user/efs-dps/manifests/fronts-backs_samples_manifest.xlsx")
     image_directory = "/home/ec2-user/efs-dps/fronts-backs_samples"
 
-    """
-    manifest = load_manifest("../test-batches/fronts-backs_samples/manifest.xlsx")
-    image_directory = "../test-batches/fronts-backs_samples"
-    #result_csv = "CSV_files/fronts_gemini_test.csv"
-     """
-
-    """
-    GENERATE OWN CSV FILE
-    """
     result_csv = input("Name of .csv file to write metadata to:")
     result_csv_path = f'CSV_files/{result_csv}'
     #Initialize image_processor
