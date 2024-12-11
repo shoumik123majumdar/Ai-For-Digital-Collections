@@ -127,12 +127,20 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
 
 
 def main():
+    #Ask for the image_directory they want to process
 
-    manifest = load_manifest("/home/ec2-user/efs-dps/manifests/fronts-backs_samples_manifest.xlsx")
-    image_directory = "/home/ec2-user/efs-dps/fronts-backs_samples"
+    """
+    image_directory = input("Name of image batch directory uploaded to the efs-dps/input directory that you want to be processed:")
+    image_directory = f"efs/home/ec2-user/efs-dps/input/{image_directory}"
+    manifest = load_manifest(f"{image_directory}/manifest.xlsx")
+    """
+    image_batch_name = input("Name of image batch directory uploaded to the test-batches directory that you want to be processed:")
+    image_directory = f"../test-batches/{image_batch_name}"
+    manifest = load_manifest(f"{image_directory}/manifest.xlsx")
 
-    result_csv = input("Name of .csv file to write metadata to:")
-    result_csv_path = f'CSV_files/{result_csv}'
+    output_csv = f"{image_batch_name}_gemini_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
+
+
     #Initialize image_processor
     image_processor = GeminiImageProcessor()
 
@@ -141,7 +149,7 @@ def main():
 
     #Initialize logger and generate a log
     ViSTA_logger = Logger('Logs')
-    log_file_path = ViSTA_logger.generate_log(f'{result_csv}_log') #<----- ENTER PATH HERE
+    log_file_path = ViSTA_logger.generate_log(f'{output_csv}_log') #<----- ENTER PATH HERE
 
 
     #Initialize transcription model
@@ -158,12 +166,12 @@ def main():
     #Initialize metadata exporter class
     metadata_exporter = MetadataExporter()
 
-    #ACTUAL PROCESSING CODE AFTER MODEL INSTANTIATION
+    #ACTUAL PROCESSING FUNCTION AFTER MODULE CREATION STEPS
     process_manifest_images(
         manifest,
         image_directory,
         lambda front, back=None: generate_metadata(
-            front, image_processor, transcription_model, image_description_model, metadata_exporter, result_csv_path  ,token_tracker, ViSTA_logger, log_file_path,back
+            front, image_processor, transcription_model, image_description_model, metadata_exporter, output_csv  ,token_tracker, ViSTA_logger, log_file_path,back
         )
     )
 
