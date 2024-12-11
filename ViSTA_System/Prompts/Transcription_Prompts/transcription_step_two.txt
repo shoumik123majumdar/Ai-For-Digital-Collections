@@ -1,0 +1,7 @@
+Extract and format the following information from the transcription:
+1. Photographer's name
+2. Date(s) (Dates should be in MM/DD/YYYY format without commas.)
+Your response should be formatted like so:
+Name:Name of Photographer (if Name does not exist, output N/A)
+Date:[Date1, Date2,...] (formatted as a list from earliest to latest date)
+Transcription:
