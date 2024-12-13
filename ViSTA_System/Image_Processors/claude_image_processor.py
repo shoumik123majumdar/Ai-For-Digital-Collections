@@ -21,13 +21,13 @@ class ClaudeImageProcessor(ImageProcessor):
             Outputs:
                 - base_64 encoding of given image
         """
-        self._greyscale_image()
-        self._resize_image()
+        #self._greyscale()  # Only if image has back
+        self._resize(file_path, 2000, 2000)
         with open(file_path, 'rb') as image_file:
             return base64.b64encode(image_file.read()).decode('utf-8')
 
-    def _greyscale_image(self, file_path):
+    def _greyscale(self, file_path):
         super()._grayscale(file_path)
 
-    def _resize_image(self, file_path, width, height):
+    def _resize(self, file_path, width, height):
         super()._resize(file_path, width, height)
