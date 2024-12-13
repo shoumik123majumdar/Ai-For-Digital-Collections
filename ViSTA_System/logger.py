@@ -22,8 +22,7 @@ class Logger:
         :param log_file_name: Name of the log file to be created
         :return: The path of the generated log file
         """
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_file_csv = os.path.join(self.log_dir, f'{log_file_name}_{timestamp}')
+        log_file_csv = os.path.join(self.log_dir, f'{log_file_name}')
 
         # Create the log file with the header
         with open(log_file_csv, 'w', newline='') as log_file:

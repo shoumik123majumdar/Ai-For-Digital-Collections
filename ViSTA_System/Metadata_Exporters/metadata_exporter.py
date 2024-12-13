@@ -8,14 +8,14 @@ class MetadataExporter(ABC):
     Supports csv and json exports
     """
 
-    def write_to_csv(self, metadata,csv_file_path):
+    def write_to_csv(self, metadata,csv_file):
             """
-            Takes metadata object and appends contents to the csv file located @ csv_file_path
+            Takes metadata object and appends contents to a newly generated csv file located in home/efs-dps/output
             :param metadata: metadata object to be written to csv_file
-            :param csv_file_path: csv file path to the csv that the metadata will be appended into
+            :param csv_file: name of the csv_file to be generated
             :return: None: csv file will be altered in place
             """
-            with open(csv_file_path, "a") as csv_file:
+            with open(f"/home/ec2-user/efs-dps/output/{csv_file}", "a") as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(metadata.get_metadata_as_list())
 
