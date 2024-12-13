@@ -34,7 +34,7 @@ class ClaudeTranscriptionModel(TranscriptionModel):
         # extract raw transcription text update token usage data
         raw_transcription = response.content
         token_data = response.usage
-        self.token_tracker.update_token_traker(token_data)
+        self.token_tracker.update_token_tracker(token_data)
 
         # extract details (photographer name and date) from raw transcriptions
         detailed_extraction_prompt = f"{self.detail_extraction_prompt}{raw_transcription}"
@@ -47,7 +47,7 @@ class ClaudeTranscriptionModel(TranscriptionModel):
         # extract detail extraction text and update token tracker
         detailed_extraction = detail_response.content
         token_data = response.usage
-        self.token_tracker.update_token_traker(token_data)
+        self.token_tracker.update_token_tracker(token_data)
 
         # create transcription object
         transcription = Transcription(raw_transcription, detailed_extraction)
