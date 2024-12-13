@@ -1,4 +1,4 @@
-from image_processor import ImageProcessor
+from .image_processor import ImageProcessor
 import base64
 import os
 from PIL import Image

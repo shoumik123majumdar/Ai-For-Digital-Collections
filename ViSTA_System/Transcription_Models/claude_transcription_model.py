@@ -1,5 +1,5 @@
-from transcription_model import TranscriptionModel
-from transcription import Transcription
+from .transcription_model import TranscriptionModel
+from .transcription import Transcription
 import anthropic
 import os
 
