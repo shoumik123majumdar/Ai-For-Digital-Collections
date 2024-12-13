@@ -1,0 +1,2 @@
+File Name,Process Start Time,Process End Time,Error Message
+/home/ec2-user/efs-dps/input/100_front-and-back/M214_1015936037_0001_0001_A.tif,2024-12-13 17:22:13,2024-12-13 17:22:13,"Missing required arguments; Expected either ('max_tokens', 'messages' and 'model') or ('max_tokens', 'messages', 'model' and 'stream') arguments to be given"

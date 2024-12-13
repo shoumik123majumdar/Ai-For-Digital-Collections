@@ -1,0 +1,2 @@
+File Name,Process Start Time,Process End Time,Error Message
+/home/ec2-user/efs-dps/input/100_front-and-back-jpg/M214_1015936037_0001_0001_A.tif,2024-12-13 04:41:06,2024-12-13 04:41:06,[Errno 2] No such file or directory: '/home/ec2-user/efs-dps/input/100_front-and-back-jpg/M214_1015936037_0001_0001_A.tif'
