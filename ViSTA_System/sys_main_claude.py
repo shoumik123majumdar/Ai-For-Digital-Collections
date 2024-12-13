@@ -161,7 +161,7 @@ def main():
 
     # initialize models
     token_tracker = TokenTracker()
-    image_processor = ClaudeImageProcessor
+    image_processor = ClaudeImageProcessor()
     transcription_model = ClaudeTranscriptionModel(transcription_prompt, detail_extraction_prompt_file, token_tracker)
     image_description_model = ClaudeImageDescriptionModel(title_prompt_file, abstract_prompt_file, token_tracker)
     metadata_exporter = MetadataExporter()

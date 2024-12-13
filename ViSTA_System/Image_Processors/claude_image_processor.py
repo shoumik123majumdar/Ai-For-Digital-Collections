@@ -13,7 +13,7 @@ class ClaudeImageProcessor(ImageProcessor):
         API_KEY = os.environ.get('CLAUDE_KEY')
         self.client = anthropic.Anthropic(api_key=API_KEY)
 
-    def process_image(self, file_path):
+    def process_image(self,file_path):
         """
             Processes given image at self.file_path and converts it to base_64 encoding for use with Anthropic's Claude API
             Inputs:
