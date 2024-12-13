@@ -86,11 +86,11 @@ def generate_metadata(
     :param transcription_model: TranscriptionModel object to generate a Transcription
     :param description_model: ImageDescriptionModel object to generate title and abstract
     :param metadata_exporter: MetadataExporter object to write resulting Metadata object to csv file
-    :param single_image_csv: csv file for single image metadata
-    :param front_back_csv: csv file for front-back image metadata
+    :param csv_file: output csv for appending metadata
     :param token_tracker: TokenTracker object to track the tokens used to generate the metadata
+    :param logger: logger object to log any errors
+    :param log_file_path: file path for the log
     :param back_image_path: Optional parameter that contains the Path to the image back if necessary
-    :return:
     """
 
     process_start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
