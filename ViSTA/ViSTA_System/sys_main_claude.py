@@ -12,6 +12,7 @@ from logger import Logger
 from Token_Trackers.claude_token_tracker import ClaudeTokenTracker
 import pandas as pd
 from datetime import datetime
+import os
 
 
 def load_manifest(manifest):
@@ -112,10 +113,14 @@ def generate_metadata(
         title = description_model.generate_title(image_front, context)
         abstract = description_model.generate_abstract(image_front, context)
 
+        # Extract the filename (just the name of the image file)
+        display_name = os.path.basename(front_image_path)
+
+
         # create metadata object
-        metadata = Metadata(image_front.display_name, title, abstract, token_tracker)
+        metadata = Metadata(display_name, title, abstract, token_tracker)
         if back_image_path:
-            metadata = ExtendedMetadata(image_front.display_name, title, abstract, transcription, token_tracker)
+            metadata = ExtendedMetadata(display_name, title, abstract, transcription, token_tracker)
 
         # write metadata to csv
         metadata_exporter.write_to_csv(metadata, csv_file)
@@ -147,7 +152,7 @@ def main():
     """
     image_batch_name = input(
         "Name of image batch directory uploaded to the test-batches directory that you want to be processed:")
-    image_directory = f"efs/home/ec2-user/efs-dps/input/{image_batch_name}"
+    image_directory = "../../test-batches/fronts_samples"
     manifest = load_manifest(f"{image_directory}/manifest.xlsx")
 
     # save to csv file
@@ -160,8 +165,8 @@ def main():
     abstract_prompt_file = "Prompts/Abstract_Prompts/abstract_prompt.txt"
 
     # initialize models
-    token_tracker = TokenTracker()
-    image_processor = ClaudeImageProcessor
+    token_tracker = ClaudeTokenTracker()
+    image_processor = ClaudeImageProcessor()
     transcription_model = ClaudeTranscriptionModel(transcription_prompt, detail_extraction_prompt_file, token_tracker)
     image_description_model = ClaudeImageDescriptionModel(title_prompt_file, abstract_prompt_file, token_tracker)
     metadata_exporter = MetadataExporter()

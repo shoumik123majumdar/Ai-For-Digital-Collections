@@ -1,4 +1,4 @@
-from image_description_model import ImageDescriptionModel
+from .image_description_model import ImageDescriptionModel
 import anthropic
 import os
 
@@ -17,25 +17,34 @@ class ClaudeImageDescriptionModel(ImageDescriptionModel):
         """
         """
         title_prompt = self.title_generation_prompt + (context or "")
-        content = self._prepare_content(title_prompt, "title")
+        content = self._prepare_content(image_file, title_prompt, "title")
         response = self.client.messages.create(
+            max_tokens=1500,
+            messages=[{"role": "user", "content": content}],
             model='claude-3-5-sonnet-20241022',
-            messages=[{"role": "user", "content": content}]
         )
         self.token_tracker.update_token_tracker(response.usage)
-        return response.content
+
+        title = " ".join([tb.text for tb in response.content]) if isinstance(response.content, 
+                                                                             list) else response.content
+        return title
 
     def generate_abstract(self, image_file, context=""):
         """
         """
         abstract_prompt = self.abstract_generation_prompt + (context or "")
-        content = self._prepare_content(abstract_prompt, "abstract")
+        content = self._prepare_content(image_file, abstract_prompt, "abstract")
         response = self.client.messages.create(
+            max_tokens=1500,
+            messages=[{"role": "user", "content": content}],
             model = 'claude-3-5-sonnet-20241022',
-            messages=[{"role": "user", "content": content}]
         )
         self.token_tracker.update_token_tracker(response.usage)
-        return response.content
+
+        # Assuming response.content is a list of TextBlock objects, extract the text from the list
+        abstract = " ".join([tb.text for tb in response.content]) if isinstance(response.content,
+                                                                                list) else response.content
+        return abstract
 
     def _prepare_content(self, image_file, prompt, task):
         """

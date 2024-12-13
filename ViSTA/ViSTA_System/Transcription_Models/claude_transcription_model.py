@@ -1,5 +1,5 @@
-from transcription_model import TranscriptionModel
-from transcription import Transcription
+from .transcription_model import TranscriptionModel
+from .transcription import Transcription
 import anthropic
 import os
 
@@ -11,7 +11,7 @@ class ClaudeTranscriptionModel(TranscriptionModel):
     def __init__(self, raw_transcription_prompt_file,detail_extraction_prompt_file,token_tracker):
         super().__init__(raw_transcription_prompt_file,detail_extraction_prompt_file,token_tracker)
         api_key = os.environ.get('CLAUDE_KEY')
-        self.client = anthropic.Anthropic(api_key=self.api_key)
+        self.client = anthropic.Anthropic(api_key=api_key)
 
     def generate_transcription(self, image_file):
         """
@@ -26,8 +26,9 @@ class ClaudeTranscriptionModel(TranscriptionModel):
 
         # claude API request
         response = self.client.messages.create(
+            max_tokens=1500,
+            messages=[{"role": "user", "content": content}],
             model='claude-3-5-sonnet-20241022',
-            messages=[{"role": "user", "content": content}]
         )
 
         # extract raw transcription text update token usage data
@@ -38,8 +39,9 @@ class ClaudeTranscriptionModel(TranscriptionModel):
         # extract details (photographer name and date) from raw transcriptions
         detailed_extraction_prompt = f"{self.detail_extraction_prompt}{raw_transcription}"
         detail_response = self.client.messages.create(
+            max_tokens=1500,
+            messages=[{"role": "user", "content": [{"type": "text", "text": detailed_extraction_prompt}]}],
             model='claude-3-5-sonnet-20241022',
-            messages=[{"role": "user", "content": [{"type": "text", "text": detailed_extraction_prompt}]}]
         )
 
         # extract detail extraction text and update token tracker

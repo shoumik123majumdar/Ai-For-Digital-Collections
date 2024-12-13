@@ -9,9 +9,9 @@ class ClaudeTokenTracker(TokenTracker):
         :return:
         """
         # Extract token data from the response
-        input_tokens = token_data["input_tokens"]
-        output_tokens = token_data["output_tokens"]
-        total_tokens = input+output_tokens
+        input_tokens = token_data.input_tokens
+        output_tokens = token_data.output_tokens
+        total_tokens = input_tokens+output_tokens
 
         # Update token counts
         self.update_total_token_count(total_tokens)
