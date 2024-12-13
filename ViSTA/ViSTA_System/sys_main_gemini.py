@@ -10,7 +10,7 @@ from Metadata_Exporters.metadata_exporter import MetadataExporter
 from Metadata_Exporters.metadata import Metadata
 from Metadata_Exporters.extended_metadata import ExtendedMetadata
 from logger import Logger
-from token_tracker import TokenTracker
+from Token_Trackers.gemini_token_tracker import GeminiTokenTracker
 import pandas as pd
 from datetime import datetime
 
@@ -145,7 +145,7 @@ def main():
     image_processor = GeminiImageProcessor()
 
     #Initialize token tracker class
-    token_tracker = TokenTracker()
+    token_tracker = GeminiTokenTracker()
 
     #Initialize logger and generate a log
     ViSTA_logger = Logger('Logs')
