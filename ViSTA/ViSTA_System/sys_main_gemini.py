@@ -135,7 +135,7 @@ def main():
     manifest = load_manifest(f"{image_directory}/manifest.xlsx")
     """
     image_batch_name = input("Name of image batch directory uploaded to the test-batches directory that you want to be processed:")
-    image_directory = f"../test-batches/{image_batch_name}"
+    image_directory = f"../Test-Batches/{image_batch_name}"
     manifest = load_manifest(f"{image_directory}/manifest.xlsx")
 
     output_csv = f"{image_batch_name}_gemini_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"

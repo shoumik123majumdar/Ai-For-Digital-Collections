@@ -1,4 +1,4 @@
-from token_tracker import TokenTracker
+from .token_tracker import TokenTracker
 
 class GeminiTokenTracker(TokenTracker):
     def update_token_tracker(self,token_data):

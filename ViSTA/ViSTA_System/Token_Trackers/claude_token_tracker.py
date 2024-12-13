@@ -1,4 +1,4 @@
-from token_tracker import TokenTracker
+from .token_tracker import TokenTracker
 
 class ClaudeTokenTracker(TokenTracker):
     def update_token_tracker(self,token_data):
