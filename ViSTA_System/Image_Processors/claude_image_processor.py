@@ -1,6 +1,5 @@
 from .image_processor import ImageProcessor
 import base64
-import anthropic
 import os
 from PIL import Image
 
@@ -10,10 +9,9 @@ class ClaudeImageProcessor(ImageProcessor):
     Class Implementation of ImageProcessor interface for use with Claude Models
     """
     def __init__(self):
-        API_KEY = os.environ.get('CLAUDE_KEY')
-        self.client = anthropic.Anthropic(api_key=API_KEY)
+        super().__init__()
 
-    def process_image(self,file_path):
+    def process_image(self, file_path):
         """
             Processes given image at self.file_path and converts it to base_64 encoding for use with Anthropic's Claude API
             Inputs:
@@ -21,7 +19,7 @@ class ClaudeImageProcessor(ImageProcessor):
             Outputs:
                 - base_64 encoding of given image
         """
-        #self._grayscale()  # Only if image has back
+        #self._greyscale_image()
         self._resize(file_path, 2000, 2000)
         with open(file_path, 'rb') as image_file:
             return base64.b64encode(image_file.read()).decode('utf-8')

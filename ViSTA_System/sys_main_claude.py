@@ -9,9 +9,10 @@ from Metadata_Exporters.metadata_exporter import MetadataExporter
 from Metadata_Exporters.metadata import Metadata
 from Metadata_Exporters.extended_metadata import ExtendedMetadata
 from logger import Logger
-from token_tracker import TokenTracker
+from Token_Trackers.claude_token_tracker import ClaudeTokenTracker
 import pandas as pd
 from datetime import datetime
+import os
 
 
 def load_manifest(manifest):
@@ -86,11 +87,11 @@ def generate_metadata(
     :param transcription_model: TranscriptionModel object to generate a Transcription
     :param description_model: ImageDescriptionModel object to generate title and abstract
     :param metadata_exporter: MetadataExporter object to write resulting Metadata object to csv file
-    :param csv_file: output csv for appending metadata
+    :param single_image_csv: csv file for single image metadata
+    :param front_back_csv: csv file for front-back image metadata
     :param token_tracker: TokenTracker object to track the tokens used to generate the metadata
-    :param logger: logger object to log any errors
-    :param log_file_path: file path for the log
     :param back_image_path: Optional parameter that contains the Path to the image back if necessary
+    :return:
     """
 
     process_start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -112,10 +113,14 @@ def generate_metadata(
         title = description_model.generate_title(image_front, context)
         abstract = description_model.generate_abstract(image_front, context)
 
+        # Extract the filename (just the name of the image file)
+        display_name = os.path.basename(front_image_path)
+
+
         # create metadata object
-        metadata = Metadata(image_front.display_name, title, abstract, token_tracker)
+        metadata = Metadata(display_name, title, abstract, token_tracker)
         if back_image_path:
-            metadata = ExtendedMetadata(image_front.display_name, title, abstract, transcription, token_tracker)
+            metadata = ExtendedMetadata(display_name, title, abstract, transcription, token_tracker)
 
         # write metadata to csv
         metadata_exporter.write_to_csv(metadata, csv_file)
@@ -160,15 +165,13 @@ def main():
     abstract_prompt_file = "Prompts/Abstract_Prompts/abstract_prompt.txt"
 
     # initialize models
-    token_tracker = TokenTracker()
+    token_tracker = ClaudeTokenTracker()
     image_processor = ClaudeImageProcessor()
     transcription_model = ClaudeTranscriptionModel(transcription_prompt, detail_extraction_prompt_file, token_tracker)
     image_description_model = ClaudeImageDescriptionModel(title_prompt_file, abstract_prompt_file, token_tracker)
     metadata_exporter = MetadataExporter()
     vista_logger = Logger('Logs')
-    log_file_path = vista_logger.generate_log(f"{output_csv}_log") # ENTER PATH HERE
-
-
+    log_file_path = vista_logger.generate_log(f"{output_csv}_log")  # ENTER PATH HERE
 
     # process images from manifest
     process_images_from_manifest(

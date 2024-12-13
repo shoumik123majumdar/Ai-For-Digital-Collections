@@ -26,28 +26,28 @@ class ClaudeTranscriptionModel(TranscriptionModel):
 
         # claude API request
         response = self.client.messages.create(
-            model='claude-3-5-sonnet-20241022',
+            max_tokens=1500,
             messages=[{"role": "user", "content": content}],
-            max_tokens=1500
+            model='claude-3-5-sonnet-20241022',
         )
 
         # extract raw transcription text update token usage data
         raw_transcription = response.content
         token_data = response.usage
-        self.token_tracker.update_token_tracker(token_data)
+        self.token_tracker.update_token_traker(token_data)
 
         # extract details (photographer name and date) from raw transcriptions
         detailed_extraction_prompt = f"{self.detail_extraction_prompt}{raw_transcription}"
         detail_response = self.client.messages.create(
-            model='claude-3-5-sonnet-20241022',
+            max_tokens=1500,
             messages=[{"role": "user", "content": [{"type": "text", "text": detailed_extraction_prompt}]}],
-            max_tokens=1500
+            model='claude-3-5-sonnet-20241022',
         )
 
         # extract detail extraction text and update token tracker
         detailed_extraction = detail_response.content
         token_data = response.usage
-        self.token_tracker.update_token_tracker(token_data)
+        self.token_tracker.update_token_traker(token_data)
 
         # create transcription object
         transcription = Transcription(raw_transcription, detailed_extraction)
