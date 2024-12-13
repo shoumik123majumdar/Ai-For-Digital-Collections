@@ -8,7 +8,7 @@ from Image_Description_Models.claude_image_description_model import ClaudeImageD
 from Metadata_Exporters.metadata_exporter import MetadataExporter
 from Metadata_Exporters.metadata import Metadata
 from Metadata_Exporters.extended_metadata import ExtendedMetadata
-#from logger import Logger
+from logger import Logger
 from token_tracker import TokenTracker
 import pandas as pd
 from datetime import datetime
@@ -71,9 +71,10 @@ def generate_metadata(
         transcription_model,
         description_model,
         metadata_exporter,
-        single_image_csv,
-        front_back_csv,
+        csv_file,
         token_tracker,
+        logger,
+        log_file_path,
         back_image_path=None
 ):
     """
@@ -92,53 +93,65 @@ def generate_metadata(
     :return:
     """
 
+    process_start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    error_message = ""
 
+    try:
+        # process front image
+        image_front = image_processor.process_image(front_image_path)
 
-    # process front image
-    image_front = image_processor.process_image(front_image_path)
+        # process back image (if any) and generate metadata
+        context = None
+        transcription = None
+        if back_image_path:
+            image_back = image_processor.process_image(back_image_path)
+            transcription = transcription_model.generate_transcription(image_back)
+            context = transcription.transcription
 
-    # process back image (if any) and generate metadata
-    context = None
-    transcription = None
-    if back_image_path:
-        image_back = image_processor.process_image(back_image_path)
-        transcription = transcription_model.generate_transcription(image_back)
-        context = transcription.transcription
+        # generate title and abstract using description model
+        title = description_model.generate_title(image_front, context)
+        abstract = description_model.generate_abstract(image_front, context)
 
-    # generate title and abstract using description model
-    title = description_model.generate_title(image_front, context)
-    abstract = description_model.generate_abstract(image_front, context)
+        # create metadata object
+        metadata = Metadata(image_front.display_name, title, abstract, token_tracker)
+        if back_image_path:
+            metadata = ExtendedMetadata(image_front.display_name, title, abstract, transcription, token_tracker)
 
-    # determine single or front-back image
-    if back_image_path:
-        # save metadata for front-back image pair
-        metadata = ExtendedMetadata(
-            image_front.display_name,
-            title,
-            abstract,
-            transcription,
-            token_tracker
-        )
-        metadata_exporter.write_to_csv(metadata, front_back_csv)
-    else:
-        # save metadata for single image
-        metadata = Metadata(
-            image_front.display_name,
-            title,
-            abstract,
-            token_tracker
-        )
-        metadata_exporter.write_to_csv(metadata, single_image_csv)
+        # write metadata to csv
+        metadata_exporter.write_to_csv(metadata, csv_file)
 
-    # reset token tracker
-    token_tracker.reset()
+        # reset token tracker
+        token_tracker.reset()
 
+    except Exception as e:
+        # capture error message
+        error_message = str(e)
+        logger.append_entry(log_file_path, front_image_path, process_start_time,
+                            datetime.now().strftime("%Y-%m-%d %H:%M:%S"), error_message)
+        raise  # Re-raise the exception after logging
+
+    process_end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Log successful process completion
+    if not error_message:
+        logger.append_entry(log_file_path, front_image_path, process_start_time, process_end_time, error_message)
 
 
 def main():
-    # paths to manifest and image directory
-    manifest = load_manifest("/home/ec2-user/efs-dps/manifests/manifest.xlsx")
-    image_directory = "/home/ec2-user/efs-dps/fronts-backs_samples"
+    # Ask for the image_directory they want to process
+
+    """
+    image_directory = input("Name of image batch directory uploaded to the efs-dps/input directory that you want to be processed:")
+    image_directory = f"efs/home/ec2-user/efs-dps/input/{image_directory}"
+    manifest = load_manifest(f"{image_directory}/manifest.xlsx")
+    """
+    image_batch_name = input(
+        "Name of image batch directory uploaded to the test-batches directory that you want to be processed:")
+    image_directory = f"efs/home/ec2-user/efs-dps/input/{image_batch_name}"
+    manifest = load_manifest(f"{image_directory}/manifest.xlsx")
+
+    # save to csv file
+    output_csv = f"{image_batch_name}_claude_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
 
     # paths to prompts
     transcription_prompt = "Prompts/Transcription_Prompts/transcription_step_one.txt"
@@ -152,10 +165,10 @@ def main():
     transcription_model = ClaudeTranscriptionModel(transcription_prompt, detail_extraction_prompt_file, token_tracker)
     image_description_model = ClaudeImageDescriptionModel(title_prompt_file, abstract_prompt_file, token_tracker)
     metadata_exporter = MetadataExporter()
+    vista_logger = Logger('Logs')
+    log_file_path = vista_logger.generate_log(f"{output_csv}_log") # ENTER PATH HERE
 
-    # save to csv file
-    result_single_csv = "CSV_files/claude_front_sample_test.csv"
-    result_front_back_csv = "CSV_files/claude_front-back_sample_test.csv"
+
 
     # process images from manifest
     process_images_from_manifest(
@@ -167,8 +180,10 @@ def main():
             transcription_model,
             image_description_model,
             metadata_exporter,
-            result_single_csv,
-            result_front_back_csv,
+            output_csv,
+            token_tracker,
+            vista_logger,
+            log_file_path,
             back
         )
     )
