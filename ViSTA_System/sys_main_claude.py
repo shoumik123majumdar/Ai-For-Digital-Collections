@@ -147,7 +147,7 @@ def main():
     """
     image_batch_name = input(
         "Name of image batch directory uploaded to the test-batches directory that you want to be processed:")
-    image_directory = f"efs/home/ec2-user/efs-dps/input/{image_batch_name}"
+    image_directory = f"/home/ec2-user/efs-dps/input/{image_batch_name}"
     manifest = load_manifest(f"{image_directory}/manifest.xlsx")
 
     # save to csv file
