@@ -94,6 +94,7 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
         # Process back image and transcription if provided
         if image_back_path:
             image_back = image_processor.process_image(image_back_path)
+
             transcription = transcription_model.generate_transcription(image_back)
             context = transcription.transcription
 
