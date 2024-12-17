@@ -9,7 +9,7 @@ from Image_Description_Models.gemini_image_description_model import GeminiImageD
 from Metadata_Exporters.metadata_exporter import MetadataExporter
 from Metadata_Exporters.metadata import Metadata
 from Metadata_Exporters.extended_metadata import ExtendedMetadata
-from Token_Trackers.gemini_token_tracker.py import GeminiTokenTracker
+from Token_Trackers.gemini_token_tracker import GeminiTokenTracker
 from logger import Logger
 import pandas as pd
 from datetime import datetime
