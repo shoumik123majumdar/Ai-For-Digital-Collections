@@ -47,7 +47,7 @@ class ClaudeTranscriptionModel(TranscriptionModel):
         # extract detail extraction text and update token tracker
         detailed_extraction = detail_response.content
         token_data = response.usage
-        self.token_tracker.update_token_traker(token_data)
+        self.token_tracker.update_token_tracker(token_data)
 
         # create transcription object
         transcription = Transcription(raw_transcription, detailed_extraction)
