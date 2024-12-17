@@ -8,8 +8,8 @@ from Image_Description_Models.claude_image_description_model import ClaudeImageD
 from Metadata_Exporters.metadata_exporter import MetadataExporter
 from Metadata_Exporters.metadata import Metadata
 from Metadata_Exporters.extended_metadata import ExtendedMetadata
-from logger import Logger
 from Token_Trackers.claude_token_tracker import ClaudeTokenTracker
+from logger import Logger
 import pandas as pd
 from datetime import datetime
 import os
