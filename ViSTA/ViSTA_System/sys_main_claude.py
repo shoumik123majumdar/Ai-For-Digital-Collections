@@ -152,7 +152,7 @@ def main():
     """
     image_batch_name = input(
         "Name of image batch directory uploaded to the test-batches directory that you want to be processed:")
-    image_directory = "../../test-batches/fronts_samples"
+    image_directory = "../test-batches/fronts_samples"
     manifest = load_manifest(f"{image_directory}/manifest.xlsx")
 
     # save to csv file
