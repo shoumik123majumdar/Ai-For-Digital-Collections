@@ -43,7 +43,7 @@ class Logger:
             if error_message == "":
                 print(f'Image file at {file_name} was processed successfully')
             else:
-                print('Image file at {file_name} encountered an error while processing')
+                print(f'Image file at {file_name} encountered an error while processing')
             writer.writerow([file_name, process_start_time, process_end_time, error_message])
 
 
