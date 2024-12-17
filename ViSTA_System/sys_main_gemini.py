@@ -144,8 +144,8 @@ def main():
     token_tracker = GeminiTokenTracker()
 
     #Initialize logger and generate a log
-    ViSTA_logger = Logger('Logs')
-    log_file_path = ViSTA_logger.generate_log(f'{output_csv}_log') #<----- ENTER PATH HERE
+    ViSTA_logger = Logger() #<----- ENTER LOG DIRECTORY PATH HERE
+    log_file_path = ViSTA_logger.generate_log(f'{output_csv}_log')
 
 
     #Initialize transcription model
@@ -174,11 +174,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-
-#Prompt for csv file name
-#Prompt for log file name
-
-#Do not judge based on word order judge based on level of phrases
-#Keyword ground truth
 

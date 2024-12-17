@@ -15,7 +15,7 @@ class MetadataExporter(ABC):
             :param csv_file: name of the csv_file to be generated
             :return: None: csv file will be altered in place
             """
-            with open(f"/home/ec2-user/efs-dps/output/{csv_file}", "a") as csv_file:
+            with open(f"/home/ec2-user/efs-dps/output/CSV_files/{csv_file}", "a") as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(metadata.get_metadata_as_list())
 

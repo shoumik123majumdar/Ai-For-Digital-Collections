@@ -11,9 +11,7 @@ class Logger:
         Initializes the Logger instance.
         :param log_dir: Directory to store logs.
         """
-        self.log_dir = log_dir
-        if not os.path.isdir(log_dir):
-            raise FileNotFoundError(f"No such directory exists: {log_dir}")
+        self.log_dir = "/home/ec2-user/efs-dps/output/Logs"
 
 
     def generate_log(self, log_file_name):
