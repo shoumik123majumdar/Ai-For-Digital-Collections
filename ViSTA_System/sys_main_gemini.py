@@ -145,7 +145,7 @@ def main():
 
     #Initialize logger and generate a log
     ViSTA_logger = Logger() #<----- ENTER LOG DIRECTORY PATH HERE
-    log_file_path = ViSTA_logger.generate_log(f'{output_csv}_log')
+    log_file_path = ViSTA_logger.generate_log(f'{output_csv[:-4]}_log.csv') #removes ".csv" extension from the output_csv name
 
 
     #Initialize transcription model

@@ -1,2 +1,0 @@
-File Name,Process Start Time,Process End Time,Error Message
-/home/ec2-user/efs-dps/fronts-backs_samples/A003981.jpg,2024-12-10 19:15:41,2024-12-10 19:15:41,[Errno 2] No such file or directory: '/home/ec2-user/efs-dps/fronts-backs_samples/A003981.jpg'
