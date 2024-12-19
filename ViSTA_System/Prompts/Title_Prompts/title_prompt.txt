@@ -8,10 +8,3 @@ DON'T Identify individuals by name, UNLESS NAMES ARE SPECIFIED IN GIVEN CONTEXT
 INCLUDE the geographical and/or type of location depicted, if known and significant
 Do NOT include: dates or a chronological descriptor
 If provided, use the following context to make the title more descriptive and accurate:
-
-
-
-
-
-
-
