@@ -117,7 +117,6 @@ def generate_metadata(image_front_path,image_processor,transcription_model,image
         error_message = str(e)
         logger.append_entry(log_file_path, image_front_path, process_start_time,
                             datetime.now().strftime("%Y-%m-%d %H:%M:%S"), error_message)
-        raise  # Re-raise the exception after logging
 
     process_end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
