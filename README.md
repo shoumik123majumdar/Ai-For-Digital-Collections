@@ -2,8 +2,6 @@
 
 This repository is primarily aimed at processing undigitized images from the Digital Repository Service (DRS) at Northeastern University. This project leverages multi-model VLM models (Gemini Pro 1.5, Claude Sonnet/Opus) to tag images with key metadata (ie: titles, abstracts, and subjects), contributing to Northeastern's Digital Repository Archives.
 
-This repository is open for use by anyone interested in metadata tagging and annotation, including but not limited to libraries, archives, and other literary organizations.
-
 The results from all of the research done to implement this system is linked below
 
 **[LINK TO LLM TESTING SPREADSHEET](https://docs.google.com/spreadsheets/d/1R5ee1EAB3jAFGcf7yF1zcKy2gPfhhpjEfJ12hB3jQ3M/edit?usp=sharing)**
